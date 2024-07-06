@@ -4,24 +4,24 @@
 
 **一个更好的面板 • 基于Xray Core构建**
 
-[![](https://img.shields.io/github/v/release/mhsanaei/yx-ui.svg)](https://github.com/mhsanaei/yx-ui/releases)
-[![](https://img.shields.io/github/actions/workflow/status/mhsanaei/yx-ui/release.yml.svg)](#)
-[![GO Version](https://img.shields.io/github/go-mod/go-version/mhsanaei/yx-ui.svg)](#)
-[![Downloads](https://img.shields.io/github/downloads/mhsanaei/yx-ui/total.svg)](#)
+[![](https://img.shields.io/github/v/release/yasinabbasiiii/yx-ui.svg)](https://github.com/yasinabbasiiii/yx-ui/releases)
+[![](https://img.shields.io/github/actions/workflow/status/yasinabbasiiii/yx-ui/release.yml.svg)](#)
+[![GO Version](https://img.shields.io/github/go-mod/go-version/yasinabbasiiii/yx-ui.svg)](#)
+[![Downloads](https://img.shields.io/github/downloads/yasinabbasiiii/yx-ui/total.svg)](#)
 [![License](https://img.shields.io/badge/license-GPL%20V3-blue.svg?longCache=true)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
 > **Disclaimer:** 此项目仅供个人学习交流，请不要用于非法目的，请不要在生产环境中使用。
 
 **如果此项目对你有用，请给一个**:star2:
 
-<p align="left"><a href="#"><img width="125" src="https://github.com/mhsanaei/yx-ui/assets/115543613/7aa895dd-048a-42e7-989b-afd41a74e2e1" alt="Image"></a></p>
+<p align="left"><a href="#"><img width="125" src="https://github.com/yasinabbasiiii/yx-ui/assets/115543613/7aa895dd-048a-42e7-989b-afd41a74e2e1" alt="Image"></a></p>
 
 - USDT (TRC20): `TXncxkvhkDWGts487Pjqq1qT9JmwRUz8CC`
 
 ## 安装 & 升级
 
 ```
-bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/yx-ui/master/install.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/yasinabbasiiii/yx-ui/master/install.sh)
 ```
 
 ## 安装指定版本
@@ -29,7 +29,7 @@ bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/yx-ui/master/install.
 要安装所需的版本，请将该版本添加到安装命令的末尾。 e.g., ver `v2.3.6`:
 
 ```
-bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/yx-ui/master/install.sh) v2.3.6
+bash <(curl -Ls https://raw.githubusercontent.com/yasinabbasiiii/yx-ui/master/install.sh) v2.3.6
 ```
 
 ## SSL 认证
@@ -81,7 +81,7 @@ case "${ARCH}" in
 esac
 
 
-wget https://github.com/mhsanaei/yx-ui/releases/latest/download/x-ui-linux-${XUI_ARCH}.tar.gz
+wget https://github.com/yasinabbasiiii/yx-ui/releases/latest/download/x-ui-linux-${XUI_ARCH}.tar.gz
 ```
 
 2. 下载压缩包后，执行以下命令安装或升级 x-ui：
@@ -128,7 +128,7 @@ systemctl restart x-ui
 2. 克隆仓库：
 
    ```sh
-   git clone https://github.com/mhsanaei/yx-ui.git
+   git clone https://github.com/yasinabbasiiii/yx-ui.git
    cd 3x-ui
    ```
 
@@ -148,7 +148,7 @@ systemctl restart x-ui
       --network=host \
       --restart=unless-stopped \
       --name 3x-ui \
-      ghcr.io/mhsanaei/yx-ui:latest
+      ghcr.io/yasinabbasiiii/yx-ui:latest
    ```
 
 更新至最新版本
@@ -469,4 +469,4 @@ XUI_BIN_FOLDER="bin" XUI_DB_FOLDER="/etc/x-ui" go build main.go
 
 ## Star趋势
 
-[![Stargazers over time](https://starchart.cc/mhsanaei/yx-ui.svg)](https://starchart.cc/mhsanaei/yx-ui)
+[![Stargazers over time](https://starchart.cc/yasinabbasiiii/yx-ui.svg)](https://starchart.cc/yasinabbasiiii/yx-ui)

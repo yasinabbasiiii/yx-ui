@@ -4,24 +4,24 @@
 
 **Un Panel Web Avanzado • Construido sobre Xray Core**
 
-[![](https://img.shields.io/github/v/release/mhsanaei/yx-ui.svg)](https://github.com/mhsanaei/yx-ui/releases)
-[![](https://img.shields.io/github/actions/workflow/status/mhsanaei/yx-ui/release.yml.svg)](#)
-[![GO Version](https://img.shields.io/github/go-mod/go-version/mhsanaei/yx-ui.svg)](#)
-[![Downloads](https://img.shields.io/github/downloads/mhsanaei/yx-ui/total.svg)](#)
+[![](https://img.shields.io/github/v/release/yasinabbasiiii/yx-ui.svg)](https://github.com/yasinabbasiiii/yx-ui/releases)
+[![](https://img.shields.io/github/actions/workflow/status/yasinabbasiiii/yx-ui/release.yml.svg)](#)
+[![GO Version](https://img.shields.io/github/go-mod/go-version/yasinabbasiiii/yx-ui.svg)](#)
+[![Downloads](https://img.shields.io/github/downloads/yasinabbasiiii/yx-ui/total.svg)](#)
 [![License](https://img.shields.io/badge/license-GPL%20V3-blue.svg?longCache=true)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
 > **Descargo de responsabilidad:** Este proyecto es solo para aprendizaje personal y comunicación, por favor no lo uses con fines ilegales, por favor no lo uses en un entorno de producción
 
 **Si este proyecto te es útil, podrías considerar darle una**:star2:
 
-<p align="left"><a href="#"><img width="125" src="https://github.com/mhsanaei/yx-ui/assets/115543613/7aa895dd-048a-42e7-989b-afd41a74e2e1" alt="Image"></a></p>
+<p align="left"><a href="#"><img width="125" src="https://github.com/yasinabbasiiii/yx-ui/assets/115543613/7aa895dd-048a-42e7-989b-afd41a74e2e1" alt="Image"></a></p>
 
 - USDT (TRC20): `TXncxkvhkDWGts487Pjqq1qT9JmwRUz8CC`
 
 ## Instalar y Actualizar
 
 ```
-bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/yx-ui/master/install.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/yasinabbasiiii/yx-ui/master/install.sh)
 ```
 
 ## Instalar una Versión Personalizada
@@ -29,7 +29,7 @@ bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/yx-ui/master/install.
 Para instalar la versión deseada, agrega la versión al final del comando de instalación. Por ejemplo, ver `v2.3.6`:
 
 ```
-bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/yx-ui/master/install.sh) v2.3.6
+bash <(curl -Ls https://raw.githubusercontent.com/yasinabbasiiii/yx-ui/master/install.sh) v2.3.6
 ```
 
 ## Certificado SSL
@@ -81,7 +81,7 @@ case "${ARCH}" in
 esac
 
 
-wget https://github.com/mhsanaei/yx-ui/releases/latest/download/x-ui-linux-${XUI_ARCH}.tar.gz
+wget https://github.com/yasinabbasiiii/yx-ui/releases/latest/download/x-ui-linux-${XUI_ARCH}.tar.gz
 ```
 
 2. Una vez que se haya descargado el paquete comprimido, ejecuta los siguientes comandos para instalar o actualizar x-ui:
@@ -128,7 +128,7 @@ systemctl restart x-ui
 2. Clona el Repositorio del Proyecto:
 
    ```sh
-   git clone https://github.com/mhsanaei/yx-ui.git
+   git clone https://github.com/yasinabbasiiii/yx-ui.git
    cd 3x-ui
    ```
 
@@ -148,7 +148,7 @@ systemctl restart x-ui
       --network=host \
       --restart=unless-stopped \
       --name 3x-ui \
-      ghcr.io/mhsanaei/yx-ui:latest
+      ghcr.io/yasinabbasiiii/yx-ui:latest
    ```
 
 actualizar a la última versión
@@ -470,4 +470,4 @@ XUI_BIN_FOLDER="bin" XUI_DB_FOLDER="/etc/x-ui" go build main.go
 
 ## Estrellas a lo largo del tiempo
 
-[![Stargazers over time](https://starchart.cc/mhsanaei/yx-ui.svg)](https://starchart.cc/mhsanaei/yx-ui)
+[![Stargazers over time](https://starchart.cc/yasinabbasiiii/yx-ui.svg)](https://starchart.cc/yasinabbasiiii/yx-ui)
