@@ -80,7 +80,7 @@ func (s *SettingService) GetDefaultJsonConfig() (interface{}, error) {
 }
 
 func (s *SettingService) GetAllSetting() (*entity.AllSetting, error) {
-	db := database.GetDB()
+	db := database.GetDB2()
 	settings := make([]*model.Setting, 0)
 	err := db.Model(model.Setting{}).Not("key = ?", "xrayTemplateConfig").Find(&settings).Error
 	if err != nil {
@@ -155,7 +155,7 @@ func (s *SettingService) GetAllSetting() (*entity.AllSetting, error) {
 }
 
 func (s *SettingService) ResetSettings() error {
-	db := database.GetDB()
+	db := database.GetDB2()
 	err := db.Where("1 = 1").Delete(model.Setting{}).Error
 	if err != nil {
 		return err
@@ -166,7 +166,7 @@ func (s *SettingService) ResetSettings() error {
 }
 
 func (s *SettingService) getSetting(key string) (*model.Setting, error) {
-	db := database.GetDB()
+	db := database.GetDB2()
 	setting := &model.Setting{}
 	err := db.Model(model.Setting{}).Where("settings.key = ?", key).First(setting).Error //samyar
 	//err := db.Model(model.Setting{}).Where("key = ?", key).First(setting).Error
@@ -178,7 +178,7 @@ func (s *SettingService) getSetting(key string) (*model.Setting, error) {
 
 func (s *SettingService) saveSetting(key string, value string) error {
 	setting, err := s.getSetting(key)
-	db := database.GetDB()
+	db := database.GetDB2()
 	if database.IsNotFound(err) {
 		return db.Create(&model.Setting{
 			Key:   key,

@@ -11,12 +11,14 @@ import (
 	"x-ui/database/model"
 	"x-ui/xray"
 
+	"gorm.io/driver/sqlite"
 	"gorm.io/driver/mysql" //samyar
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
 
 var db *gorm.DB
+var db2 *gorm.DB
 
 var initializers = []func() error{
 	initUser,
@@ -49,23 +51,23 @@ func initUser() error {
 }
 
 func initInbound() error {
-	return db.AutoMigrate(&model.Inbound{})
+	return db2.AutoMigrate(&model.Inbound{})
 }
 
 func initOutbound() error {
-	return db.AutoMigrate(&model.OutboundTraffics{})
+	return db2.AutoMigrate(&model.OutboundTraffics{})
 }
 
 func initSetting() error {
-	return db.AutoMigrate(&model.Setting{})
+	return db2.AutoMigrate(&model.Setting{})
 }
 
 func initInboundClientIps() error {
-	return db.AutoMigrate(&model.InboundClientIps{})
+	return db2.AutoMigrate(&model.InboundClientIps{})
 }
 
 func initClientTraffic() error {
-	return db.AutoMigrate(&xray.ClientTraffic{})
+	return db2.AutoMigrate(&xray.ClientTraffic{})
 }
 
 func InitDB(dbPath string) error {
@@ -86,13 +88,18 @@ func InitDB(dbPath string) error {
 	c := &gorm.Config{
 		Logger: gormLogger,
 	}
-	dsn := "yas:Yas2566*7425@tcp(db.ir107.ir:3306)/x_ui" //samyar
-	db, err = gorm.Open(mysql.Open(dsn), c)              //samyar
-	//db, err = gorm.Open(sqlite.Open(dbPath), c)
+	// اتصال به MySQL
+	dsn := "yas:Yas2566*7425@tcp(db.ir107.ir:3306)/x_ui"
+	db, err = gorm.Open(mysql.Open(dsn), c)
 	if err != nil {
 		return err
 	}
 
+	// اتصال به SQLite
+	db2, err = gorm.Open(sqlite.Open(dbPath), c)
+	if err != nil {
+		return err
+	}
 	for _, initialize := range initializers {
 		if err := initialize(); err != nil {
 			return err
@@ -101,11 +108,14 @@ func InitDB(dbPath string) error {
 
 	return nil
 }
-
+// اتصال به MySQL
 func GetDB() *gorm.DB {
 	return db
 }
-
+// اتصال به SQLite
+func GetDB2() *gorm.DB {
+	return db2
+}
 func IsNotFound(err error) bool {
 	return err == gorm.ErrRecordNotFound
 }
@@ -122,7 +132,7 @@ func IsSQLiteDB(file io.ReaderAt) (bool, error) {
 
 func Checkpoint() error {
 	// Update WAL
-	err := db.Exec("PRAGMA wal_checkpoint;").Error
+	err := db2.Exec("PRAGMA wal_checkpoint;").Error
 	if err != nil {
 		return err
 	}
