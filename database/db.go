@@ -30,12 +30,12 @@ var initializers = []func() error{
 }
 
 func initUser() error {
-	err := db.AutoMigrate(&model.User{})
+	err := db2.AutoMigrate(&model.User{})
 	if err != nil {
 		return err
 	}
 	var count int64
-	err = db.Model(&model.User{}).Count(&count).Error
+	err = db2.Model(&model.User{}).Count(&count).Error
 	if err != nil {
 		return err
 	}
@@ -45,7 +45,7 @@ func initUser() error {
 			Password:    "admin",
 			LoginSecret: "",
 		}
-		return db.Create(user).Error
+		return db2.Create(user).Error
 	}
 	return nil
 }
