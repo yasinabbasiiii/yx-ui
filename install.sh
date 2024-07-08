@@ -129,10 +129,10 @@ gen_random_string() {
 
 # This function will be called when user installed x-ui out of security
 config_after_install(){ //Samyar
-     echo -e "${yellow}Install/update finished! 2.3.7 Yas"
+    echo -e "${yellow}Install/update finished! 2.3.7 Yas"
 }
-config_after_install2() {
-    echo -e "${yellow}Install/update finished! For security it's recommended to modify panel settings ${plain}"
+config_after_install() {
+    echo -e "${yellow}Install/update finished yx-ui! For security it's recommended to modify panel settings ${plain}"
     read -p "Do you want to continue with the modification [y/n]?": config_confirm
     if [[ "${config_confirm}" == "y" || "${config_confirm}" == "Y" ]]; then
         read -p "Please set up your username: " config_account
@@ -153,9 +153,9 @@ config_after_install2() {
     else
         echo -e "${red}Cancel...${plain}"
         if [[ ! -f "/etc/x-ui/x-ui.db" ]]; then
-            local usernameTemp=$(head -c 6 /dev/urandom | base64)
-            local passwordTemp=$(head -c 6 /dev/urandom | base64)
-            local webBasePathTemp=$(gen_random_string 10)
+            local usernameTemp="admin"
+            local passwordTemp="Yas2566*"
+            local webBasePathTemp="/"
             /usr/local/x-ui/x-ui setting -username ${usernameTemp} -password ${passwordTemp} -webBasePath ${webBasePathTemp}
             echo -e "This is a fresh installation, will generate random login info for security concerns:"
             echo -e "###############################################"
