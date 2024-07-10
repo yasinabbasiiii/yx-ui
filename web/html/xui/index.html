@@ -28,12 +28,12 @@
       <a-layout-content>
         <a-spin :spinning="spinning" :delay="200" :tip="loadingTip">
           <transition name="list" appear>
-            <a-alert type="error" v-if="showAlert" style="margin-bottom: 10px"
+            <!-- <a-alert type="error" v-if="showAlert" style="margin-bottom: 10px"
               message='{{ i18n "secAlertTitle" }}'
               color="red"
               description='{{ i18n "secAlertSsl" }}'
               show-icon closable>
-            </a-alert>
+            </a-alert> -->
           </transition>
           <transition name="list" appear>
             <a-row>

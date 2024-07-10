@@ -6,7 +6,7 @@ class AllSetting {
         this.webPort = 34871;
         this.webCertFile = "";
         this.webKeyFile = "";
-        this.webBasePath = "/";
+        this.webBasePath = "/u3r7y2n5/";
         this.sessionMaxAge = "";
         this.pageSize = 50;
         this.expireDiff = "";
