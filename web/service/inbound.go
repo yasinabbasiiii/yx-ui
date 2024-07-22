@@ -1645,9 +1645,10 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 	} else {
 		whereText += "= ?"
 	}
-
+	expiryThreshold := time.Now().AddDate(0, 0, -3)
 	depletedClients := []xray.ClientTraffic{}
-	err = db.Model(xray.ClientTraffic{}).Where(whereText+" and enable = ?", id, false).Select("inbound_id, GROUP_CONCAT(email) as email").Group("inbound_id").Find(&depletedClients).Error
+	//err = db.Model(xray.ClientTraffic{}).Where(whereText+" and enable = ?", id, false).Select("inbound_id, GROUP_CONCAT(email) as email").Group("inbound_id").Find(&depletedClients).Error
+	err = db.Model(xray.ClientTraffic{}).Where("expiry_time <= ?", expiryThreshold).Select("inbound_id, GROUP_CONCAT(email) as email").Group("inbound_id").Find(&depletedClients).Error
 	if err != nil {
 		return err
 	}
