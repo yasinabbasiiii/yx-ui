@@ -1629,6 +1629,7 @@ func (s *InboundService) ResetAllTraffics() error {
 }
 
 func (s *InboundService) DelDepletedClients(id int) (err error) {
+	logger.Error("1")
 	db := database.GetDB()
 	tx := db.Begin()
 	defer func() {
@@ -1649,14 +1650,14 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 	depletedClients := []xray.ClientTraffic{}
 	//err = db.Model(xray.ClientTraffic{}).Where(whereText+" and enable = ?", id, false).Select("inbound_id, GROUP_CONCAT(email) as email").Group("inbound_id").Find(&depletedClients).Error
 	err = db.Model(xray.ClientTraffic{}).Where(whereText+" and enable = ? and expiry_time > 0 and expiry_time < ?", id, false, expiryThreshold).Select("inbound_id, GROUP_CONCAT(email) as email").Group("inbound_id").Find(&depletedClients).Error
-
+	logger.Error("2")
 	if err != nil {
 		return err
 	}
 	// var re=""
 	for _, depletedClient := range depletedClients {
 		//emails := strings.Split(depletedClient.Email, ",")
-		fmt.Println(depletedClient.Email + ",")
+		//fmt.Println(depletedClient.Email + ",")
 		logger.Error(depletedClient.Email + ",")
 		// oldInbound, err := s.GetInbound(depletedClient.InboundId)
 		// if err != nil {
