@@ -1639,7 +1639,7 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 		}
 	}()
 
-	whereText := "reset = 0 and inbound_id "
+	whereText := "reset = 0 and inbound_id = "
 	if id < 0 {
 		whereText += "> ?"
 	} else {
