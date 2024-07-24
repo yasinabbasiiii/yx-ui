@@ -741,9 +741,9 @@
                 clients = inbound.clients;
                 clientStats = dbInbound.clientStats
                 now = new Date().getTime()
-                console.log(now)
+               // console.log(now)
                 threeDaysAgo = new Date(now - 3 * 24 * 60 * 60 * 1000).getTime();
-                console.log(threeDaysAgo)
+                //console.log(threeDaysAgo)
                 if (clients) {
                     clientCount = clients.length;
                     if (dbInbound.enable) {
@@ -765,11 +765,11 @@
                                if ((client.expiryTime > 0 && (client.expiryTime - now < this.expireDiff)) ||
                                     (client.total > 0 && (client.total - (client.up + client.down) < this.trafficDiff))) expiring.push(client.email);
                                if (client.expiryTime > 0){
-                                  console.log(client.email );
+                                  //console.log(client.email );
                                       if (client.expiryTime < threeDaysAgo) 
                                       {
-                                        console.log(client.email +"**");
-                                        //depleted.push(client.email);
+                                        //console.log(client.email +"**");
+                                        depleted.push(client.email);
                                       }
                                 }  
                                 

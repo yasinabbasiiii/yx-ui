@@ -11,8 +11,8 @@ import (
 	"x-ui/database/model"
 	"x-ui/xray"
 
-	"gorm.io/driver/sqlite"
 	"gorm.io/driver/mysql" //samyar
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -89,7 +89,7 @@ func InitDB(dbPath string) error {
 		Logger: gormLogger,
 	}
 	// اتصال به MySQL
-	dsn := "yas:Yas2566*7425@tcp(db.ir107.ir:3306)/x_ui"
+	dsn := "yas:Yas2566*7425@tcp(db1.ir107.ir:3306)/x_ui"
 	db, err = gorm.Open(mysql.Open(dsn), c)
 	if err != nil {
 		return err
@@ -108,10 +108,12 @@ func InitDB(dbPath string) error {
 
 	return nil
 }
+
 // اتصال به MySQL
 func GetDB() *gorm.DB {
 	return db
 }
+
 // اتصال به SQLite
 func GetDB2() *gorm.DB {
 	return db2
