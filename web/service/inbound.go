@@ -1651,6 +1651,8 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 	//err = db.Model(xray.ClientTraffic{}).Where(whereText+" and enable = ?", id, false).Select("inbound_id, GROUP_CONCAT(email) as email").Group("inbound_id").Find(&depletedClients).Error
 	err = db.Model(xray.ClientTraffic{}).Where(whereText+" and enable = ? and expiry_time > 0 and expiry_time < ?", id, false, expiryThreshold).Select("inbound_id, GROUP_CONCAT(email) as email").Group("inbound_id").Find(&depletedClients).Error
 	logger.Error("2")
+	logger.Error(depletedClients)
+	logger.Error("3")
 	if err != nil {
 		return err
 	}
