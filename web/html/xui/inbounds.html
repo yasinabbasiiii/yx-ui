@@ -742,7 +742,7 @@
                 clientStats = dbInbound.clientStats
                 now = new Date().getTime()
                 console.log(now)
-                threeDaysAgo = new Date(now - 3 * 24 * 60 * 60 * 1000);
+                threeDaysAgo = new Date(now - 3 * 24 * 60 * 60 * 1000).getTime();
                 console.log(threeDaysAgo)
                 if (clients) {
                     clientCount = clients.length;
