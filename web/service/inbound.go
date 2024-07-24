@@ -1639,7 +1639,7 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 		}
 	}()
 
-	whereText := "reset = 0 and inbound_id = "
+	whereText := "reset = 0 and inbound_id "
 	if id < 0 {
 		whereText += "> ?"
 	} else {
@@ -1700,7 +1700,7 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 		//}
 	}
 
-	err = tx.Where(whereText+" and enable = ? and expiry_time >0 and expiry_time <= ?", id, false, expiryThreshold).Delete(xray.ClientTraffic{}).Error
+	err = tx.Where(whereText+" and enable = ? and expiry_time >0 and expiry_time < ?", id, false, expiryThreshold).Delete(xray.ClientTraffic{}).Error
 	if err != nil {
 		return err
 	}
