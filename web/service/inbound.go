@@ -1693,10 +1693,11 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 			if err != nil {
 				return err
 			}
-		} else {
-			// Delete inbound if no client remains
-			//s.DelInbound(depletedClient.InboundId)
 		}
+		//else {
+		// Delete inbound if no client remains
+		//s.DelInbound(depletedClient.InboundId)
+		//}
 	}
 
 	err = tx.Where(whereText+" and enable = ? and expiry_time >0 and expiry_time <= ?", id, false, expiryThreshold).Delete(xray.ClientTraffic{}).Error
