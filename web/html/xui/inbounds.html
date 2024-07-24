@@ -755,8 +755,8 @@
                         });
                         clientStats.forEach(client => {
                             if (!client.enable) {
-                            //    depleted.push(client.email);
-                            if ((client.expiryTime > 0 && (client.expiryTime < threeDaysAgo))) depleted.push(client.email);
+                                depleted.push(client.email);
+                            //if ((client.expiryTime > 0 && (client.expiryTime < threeDaysAgo))) depleted.push(client.email);
                             }
                             
                             else {
