@@ -749,7 +749,8 @@
                     if (dbInbound.enable) {
                         clients.forEach(client => {
                             if (client.enable) {
-                                active.push(client.email);
+                                if (client.expiryTime > 0 && (client.expiryTime  < threeDaysAgo))  depleted.push(client.email);
+                                else active.push(client.email);
                                 if (this.isClientOnline(client.email)) online.push(client.email);
                             } else {
                                 deactive.push(client.email);
@@ -757,7 +758,7 @@
                         });
                         clientStats.forEach(client => {
                             if (!client.enable) {
-                              if (client.expiryTime > 0 && (client.expiryTime  < threeDaysAgo))  depleted.push(client.email);
+                              //if (client.expiryTime > 0 && (client.expiryTime  < threeDaysAgo))  depleted.push(client.email);
                             } else {
                                 if ((client.expiryTime > 0 && (client.expiryTime - now < this.expireDiff)) ||
                                     (client.total > 0 && (client.total - (client.up + client.down) < this.trafficDiff))) expiring.push(client.email);
