@@ -1646,13 +1646,14 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 	} else {
 		whereText += "= ?"
 	}
-	//expiryThreshold := time.Now().AddDate(0, 0, -3).Unix()
+	expiryThreshold := time.Now().AddDate(0, 0, -3).Unix()
 	depletedClients := []xray.ClientTraffic{}
 	//err = db.Model(xray.ClientTraffic{}).Where(whereText+" and enable = ?", id, false).Select("inbound_id, GROUP_CONCAT(email) as email").Group("inbound_id").Find(&depletedClients).Error
 	err = db.Model(xray.ClientTraffic{}).Where(whereText+" and enable = ? and expiry_time > 0", id, false).Select("inbound_id, GROUP_CONCAT(email) as email").Group("inbound_id").Find(&depletedClients).Error
 	logger.Error("2")
 	logger.Error(depletedClients)
 	logger.Error("3")
+	logger.Error(expiryThreshold)
 	if err != nil {
 		return err
 	}
@@ -1660,7 +1661,7 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 	for _, depletedClient := range depletedClients {
 		//emails := strings.Split(depletedClient.Email, ",")
 		//fmt.Println(depletedClient.Email + ",")
-		logger.Error(depletedClient.Email + ",")
+		logger.Error(depletedClient.Email + "," + strconv.FormatInt(depletedClient.ExpiryTime, 10) + ",")
 		// oldInbound, err := s.GetInbound(depletedClient.InboundId)
 		// if err != nil {
 		// 	return err
