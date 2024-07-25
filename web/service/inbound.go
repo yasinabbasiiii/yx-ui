@@ -785,6 +785,7 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 }
 
 func (s *InboundService) addInboundTraffic(tx *gorm.DB, traffics []*xray.Traffic) error {
+	logger.Error(traffics)
 	if len(traffics) == 0 {
 		return nil
 	}
