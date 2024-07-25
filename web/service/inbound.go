@@ -1663,58 +1663,57 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 	for _, depletedClient := range depletedClients {
 		emails := strings.Split(depletedClient.Email, ",")
 		logger.Error(emails)
-		//fmt.Println(depletedClient.Email + ",")
-		//logger.Error(depletedClient.Email + "," + strconv.FormatInt(depletedClient.ExpiryTime, 10) + ",")
-		// oldInbound, err := s.GetInbound(depletedClient.InboundId)
-		// if err != nil {
-		// 	return err
-		// }
-		// var oldSettings map[string]interface{}
-		// err = json.Unmarshal([]byte(oldInbound.Settings), &oldSettings)
-		// if err != nil {
-		// 	return err
-		// }
 
-		// oldClients := oldSettings["clients"].([]interface{})
-		// var newClients []interface{}
-		// for _, client := range oldClients {
-		// 	deplete := false
-		// 	c := client.(map[string]interface{})
-		// 	for _, email := range emails {
-		// 		if email == c["email"].(string) {
-		// 			deplete = true
-		// 			break
-		// 		}
-		// 	}
-		// 	if !deplete {
-		// 		newClients = append(newClients, client)
-		// 	}
-		// }
-		// if len(newClients) > 0 {
-		// 	oldSettings["clients"] = newClients
+		oldInbound, err := s.GetInbound(depletedClient.InboundId)
+		if err != nil {
+			return err
+		}
+		var oldSettings map[string]interface{}
+		err = json.Unmarshal([]byte(oldInbound.Settings), &oldSettings)
+		if err != nil {
+			return err
+		}
 
-		// 	newSettings, err := json.MarshalIndent(oldSettings, "", "  ")
-		// 	if err != nil {
-		// 		return err
-		// 	}
+		oldClients := oldSettings["clients"].([]interface{})
+		var newClients []interface{}
+		for _, client := range oldClients {
+			deplete := false
+			c := client.(map[string]interface{})
+			for _, email := range emails {
+				if email == c["email"].(string) {
+					deplete = true
+					break
+				}
+			}
+			if !deplete {
+				newClients = append(newClients, client)
+			}
+		}
+		if len(newClients) > 0 {
+			oldSettings["clients"] = newClients
 
-		// 	oldInbound.Settings = string(newSettings)
-		// 	err = tx.Save(oldInbound).Error
-		// 	if err != nil {
-		// 		return err
-		// 	}
-		// }
-		//else {
+			newSettings, err := json.MarshalIndent(oldSettings, "", "  ")
+			if err != nil {
+				return err
+			}
+
+			oldInbound.Settings = string(newSettings)
+			err = tx.Save(oldInbound).Error
+			if err != nil {
+				return err
+			}
+		}
+		// else {
 		// Delete inbound if no client remains
-		//s.DelInbound(depletedClient.InboundId)
-		//}
+		// s.DelInbound(depletedClient.InboundId)
+		// }
 
 	}
 
-	// err = tx.Where(whereText+" and enable = ? and expiry_time >0 and expiry_time < ?", id, false, expiryThreshold).Delete(xray.ClientTraffic{}).Error
-	// if err != nil {
-	// 	return err
-	// }
+	err = tx.Where(whereText+" and enable = ? and expiry_time >0 and expiry_time < ?", id, false, expiryThreshold).Delete(xray.ClientTraffic{}).Error
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
