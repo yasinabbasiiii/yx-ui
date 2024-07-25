@@ -785,6 +785,7 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 }
 
 func (s *InboundService) addInboundTraffic(tx *gorm.DB, traffics []*xray.Traffic) error {
+	//Samyar
 	//logger.Error(traffics)
 	// if len(traffics) == 0 {
 	// 	return nil
@@ -848,6 +849,7 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTr
 			if dbClientTraffics[dbTraffic_index].Email == traffics[traffic_index].Email {
 				dbClientTraffics[dbTraffic_index].Up += traffics[traffic_index].Up
 				dbClientTraffics[dbTraffic_index].Down += traffics[traffic_index].Down
+				dbClientTraffics[dbTraffic_index].Down = time.Now().Unix() * 1000
 
 				// Add user in onlineUsers array on traffic
 				if traffics[traffic_index].Up+traffics[traffic_index].Down > 0 {
