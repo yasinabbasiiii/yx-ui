@@ -1676,6 +1676,7 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 
 		oldClients := oldSettings["clients"].([]interface{})
 		var newClients []interface{}
+		logger.Error("4")
 		for _, client := range oldClients {
 			deplete := false
 			c := client.(map[string]interface{})
@@ -1689,6 +1690,7 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 				newClients = append(newClients, client)
 			}
 		}
+		logger.Error("5")
 		if len(newClients) > 0 {
 			oldSettings["clients"] = newClients
 
@@ -1696,7 +1698,7 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 			if err != nil {
 				return err
 			}
-
+			logger.Error("6")
 			oldInbound.Settings = string(newSettings)
 			err = tx.Save(oldInbound).Error
 			if err != nil {
@@ -1709,12 +1711,12 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 		// }
 
 	}
-
+	logger.Error("7")
 	err = tx.Where(whereText+" and enable = ? and expiry_time >0 and expiry_time < ?", id, false, expiryThreshold).Delete(xray.ClientTraffic{}).Error
 	if err != nil {
 		return err
 	}
-
+	logger.Error("8")
 	return nil
 }
 
