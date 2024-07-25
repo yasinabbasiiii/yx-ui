@@ -1665,6 +1665,7 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 		logger.Error(emails)
 
 		oldInbound, err := s.GetInbound(depletedClient.InboundId)
+		logger.Error(oldInbound)
 		if err != nil {
 			return err
 		}
@@ -1675,6 +1676,7 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 		}
 
 		oldClients := oldSettings["clients"].([]interface{})
+		logger.Error(oldClients)
 		var newClients []interface{}
 		logger.Error("4")
 		for _, client := range oldClients {
