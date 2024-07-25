@@ -786,27 +786,29 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 
 func (s *InboundService) addInboundTraffic(tx *gorm.DB, traffics []*xray.Traffic) error {
 	//logger.Error(traffics)
-	if len(traffics) == 0 {
-		return nil
-	}
+	// if len(traffics) == 0 {
+	// 	return nil
+	// }
 
-	var err error
+	// var err error
 
-	for _, traffic := range traffics {
-		logger.Error(traffic)
-		logger.Error(traffic.IsInbound)
-		logger.Error(traffic.Tag)
-		if traffic.IsInbound {
-			err = tx.Model(&model.Inbound{}).Where("tag = ?", traffic.Tag).
-				Updates(map[string]interface{}{
-					"up":   gorm.Expr("up + ?", traffic.Up),
-					"down": gorm.Expr("down + ?", traffic.Down),
-				}).Error
-			if err != nil {
-				return err
-			}
-		}
-	}
+	// for _, traffic := range traffics {
+	// 	logger.Error(traffic)
+	// 	logger.Error(traffic.IsInbound)
+	// 	logger.Error(traffic.Tag)
+	// 	if traffic.IsInbound {
+	// 		if(traffic.Up >0 || traffic.Down >0){
+	// 			err = tx.Model(&model.Inbound{}).Where("tag = ?", traffic.Tag).
+	// 				Updates(map[string]interface{}{
+	// 					"up":   gorm.Expr("up + ?", traffic.Up),
+	// 					"down": gorm.Expr("down + ?", traffic.Down),
+	// 				}).Error
+	// 			if err != nil {
+	// 				return err
+	// 			}
+	// 	}
+	// }
+	// }
 	return nil
 }
 
