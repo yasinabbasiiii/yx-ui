@@ -261,7 +261,7 @@ func (s *Server) startTask() {
 	}()
 
 	// check client ips from log file every 10 sec
-	s.cron.AddJob("@every 3600s", job.NewCheckClientIpJob())
+	//s.cron.AddJob("@every 3600s", job.NewCheckClientIpJob()) //Samyar
 
 	// check client ips from log file every day
 	s.cron.AddJob("@daily", job.NewClearLogsJob())

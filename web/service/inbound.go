@@ -1629,7 +1629,6 @@ func (s *InboundService) ResetAllTraffics() error {
 }
 
 func (s *InboundService) DelDepletedClients(id int) (err error) {
-	logger.Error("1")
 	db := database.GetDB()
 	tx := db.Begin()
 	defer func() {
@@ -1646,24 +1645,20 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 	} else {
 		whereText += "= ?"
 	}
-	expiryThreshold := time.Now().AddDate(0, 0, -3).UnixMilli()
+	expiryThreshold := time.Now().AddDate(0, 0, -3).UnixMilli() //Samyar
 	depletedClients := []xray.ClientTraffic{}
 	//err = db.Model(xray.ClientTraffic{}).Where(whereText+" and enable = ?", id, false).Select("inbound_id, GROUP_CONCAT(email) as email").Group("inbound_id").Find(&depletedClients).Error
 	err = db.Model(xray.ClientTraffic{}).
 		Where(whereText+" and enable = ? and expiry_time > 0 and expiry_time < ?  ", id, false, expiryThreshold).
 		Select("inbound_id, GROUP_CONCAT(email) as email").
 		Group("inbound_id").
-		Find(&depletedClients).Error
-	logger.Error("2")
-	logger.Error(depletedClients)
-	logger.Error("3")
-	logger.Error(expiryThreshold)
+		Find(&depletedClients).Error //Samyar
 	if err != nil {
 		return err
 	}
 	for _, depletedClient := range depletedClients {
 		emails := strings.Split(depletedClient.Email, ",")
-		logger.Error(emails)
+		logger.Error(emails) //Samyar
 		oldInbound, err := s.GetInbound(depletedClient.InboundId)
 		if err != nil {
 			return err
@@ -1704,12 +1699,11 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 			}
 		} else {
 			// Delete inbound if no client remains
-			//s.DelInbound(depletedClient.InboundId)
+			//s.DelInbound(depletedClient.InboundId) //Samyar
 			logger.Error("Delete inbound ?", depletedClient.InboundId)
 		}
 	}
-	logger.Error("7")
-	err = tx.Where(whereText+" and enable = ? and expiry_time >0 and expiry_time < ?", id, false, expiryThreshold).Delete(xray.ClientTraffic{}).Error
+	err = tx.Where(whereText+" and enable = ? and expiry_time >0 and expiry_time < ?", id, false, expiryThreshold).Delete(xray.ClientTraffic{}).Error //Samyar
 	if err != nil {
 		return err
 	}
