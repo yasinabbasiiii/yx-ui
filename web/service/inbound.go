@@ -785,7 +785,7 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 }
 
 func (s *InboundService) addInboundTraffic(tx *gorm.DB, traffics []*xray.Traffic) error {
-	logger.Error(traffics)
+	//logger.Error(traffics)
 	if len(traffics) == 0 {
 		return nil
 	}
@@ -793,6 +793,9 @@ func (s *InboundService) addInboundTraffic(tx *gorm.DB, traffics []*xray.Traffic
 	var err error
 
 	for _, traffic := range traffics {
+		logger.Error(traffic)
+		logger.Error(traffic.IsInbound)
+		logger.Error(traffic.Tag)
 		if traffic.IsInbound {
 			err = tx.Model(&model.Inbound{}).Where("tag = ?", traffic.Tag).
 				Updates(map[string]interface{}{
