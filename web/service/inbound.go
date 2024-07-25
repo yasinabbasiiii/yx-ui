@@ -1649,9 +1649,11 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 	expiryThreshold := time.Now().AddDate(0, 0, -3).UnixMilli()
 	depletedClients := []xray.ClientTraffic{}
 	//err = db.Model(xray.ClientTraffic{}).Where(whereText+" and enable = ?", id, false).Select("inbound_id, GROUP_CONCAT(email) as email").Group("inbound_id").Find(&depletedClients).Error
-	err = db.Model(xray.ClientTraffic{}).Where(whereText+" and enable = ? and expiry_time > 0 and expiry_time < ?  ", id, false, expiryThreshold).
-		Select("inbound_id, GROUP_CONCAT(email) as email, expiry_time").
-		Group("inbound_id,email, expiry_time").Find(&depletedClients).Error
+	err = db.Model(xray.ClientTraffic{}).
+		Where(whereText+" and enable = ? and expiry_time > 0 and expiry_time < ?  ", id, false, expiryThreshold).
+		Select("inbound_id, GROUP_CONCAT(email) as email").
+		Group("inbound_id").
+		Find(&depletedClients).Error
 	logger.Error("2")
 	logger.Error(depletedClients)
 	logger.Error("3")
@@ -1659,13 +1661,10 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 	if err != nil {
 		return err
 	}
-	// var re=""
 	for _, depletedClient := range depletedClients {
 		emails := strings.Split(depletedClient.Email, ",")
 		logger.Error(emails)
-
 		oldInbound, err := s.GetInbound(depletedClient.InboundId)
-		logger.Error(oldInbound)
 		if err != nil {
 			return err
 		}
@@ -1676,9 +1675,7 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 		}
 
 		oldClients := oldSettings["clients"].([]interface{})
-		logger.Error(oldClients)
 		var newClients []interface{}
-		logger.Error("4")
 		for _, client := range oldClients {
 			deplete := false
 			c := client.(map[string]interface{})
@@ -1692,7 +1689,6 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 				newClients = append(newClients, client)
 			}
 		}
-		logger.Error("5")
 		if len(newClients) > 0 {
 			oldSettings["clients"] = newClients
 
@@ -1700,18 +1696,17 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 			if err != nil {
 				return err
 			}
-			logger.Error("6")
+
 			oldInbound.Settings = string(newSettings)
 			err = tx.Save(oldInbound).Error
 			if err != nil {
 				return err
 			}
+		} else {
+			// Delete inbound if no client remains
+			//s.DelInbound(depletedClient.InboundId)
+			logger.Error("Delete inbound ?", depletedClient.InboundId)
 		}
-		// else {
-		// Delete inbound if no client remains
-		// s.DelInbound(depletedClient.InboundId)
-		// }
-
 	}
 	logger.Error("7")
 	err = tx.Where(whereText+" and enable = ? and expiry_time >0 and expiry_time < ?", id, false, expiryThreshold).Delete(xray.ClientTraffic{}).Error
