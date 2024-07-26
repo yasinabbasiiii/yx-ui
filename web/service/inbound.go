@@ -758,6 +758,7 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 	// }
 	err = s.addClientTraffic(tx, clientTraffics)
 	if err != nil {
+		logger.Error("1")
 		return err, false
 	}
 
@@ -807,15 +808,15 @@ func (s *InboundService) addInboundTraffic(tx *gorm.DB, traffics []*xray.Traffic
 }
 
 func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTraffic) (err error) {
-	if len(traffics) == 0 {
-		// Empty onlineUsers
-		if p != nil {
-			p.SetOnlineClients(nil)
-		}
-		return nil
-	}
+	// if len(traffics) == 0 {
+	// 	// Empty onlineUsers
+	// 	if p != nil {
+	// 		p.SetOnlineClients(nil)
+	// 	}
+	// 	return nil
+	// }
 
-	var onlineClients []string
+	//var onlineClients []string
 
 	emails := make([]string, 0, len(traffics))
 	for _, traffic := range traffics {
@@ -842,18 +843,19 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTr
 			if dbClientTraffics[dbTraffic_index].Email == traffics[traffic_index].Email {
 				dbClientTraffics[dbTraffic_index].Up += traffics[traffic_index].Up
 				dbClientTraffics[dbTraffic_index].Down += traffics[traffic_index].Down
+				dbClientTraffics[dbTraffic_index].Last = time.Now().Unix() * 1000 //Samyar
 
 				// Add user in onlineUsers array on traffic
-				if traffics[traffic_index].Up+traffics[traffic_index].Down > 0 {
-					onlineClients = append(onlineClients, traffics[traffic_index].Email)
-				}
-				break
+				// if traffics[traffic_index].Up+traffics[traffic_index].Down > 0 {
+				// 	onlineClients = append(onlineClients, traffics[traffic_index].Email)
+				// }
+				// break
 			}
 		}
 	}
 
 	// Set onlineUsers
-	p.SetOnlineClients(onlineClients)
+	//p.SetOnlineClients(onlineClients)
 
 	err = tx.Save(dbClientTraffics).Error
 	if err != nil {
