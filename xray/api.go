@@ -46,8 +46,6 @@ func (x *XrayAPI) Init(apiPort int) (err error) {
 	hsClient := command.NewHandlerServiceClient(x.grpcClient)
 	ssClient := statsService.NewStatsServiceClient(x.grpcClient)
 
-	logger.Error(hsClient)
-	logger.Error(ssClient)
 	x.HandlerServiceClient = &hsClient
 	x.StatsServiceClient = &ssClient
 
