@@ -32,7 +32,7 @@ type XrayAPI struct {
 }
 
 func (x *XrayAPI) Init(apiPort int) (err error) {
-	logger.Error("3")
+	//logger.Error("3")
 	if apiPort == 0 {
 		return common.NewError("xray api port wrong:", apiPort)
 	}
@@ -46,6 +46,8 @@ func (x *XrayAPI) Init(apiPort int) (err error) {
 	hsClient := command.NewHandlerServiceClient(x.grpcClient)
 	ssClient := statsService.NewStatsServiceClient(x.grpcClient)
 
+	logger.Error(hsClient)
+	logger.Error(ssClient)
 	x.HandlerServiceClient = &hsClient
 	x.StatsServiceClient = &ssClient
 
