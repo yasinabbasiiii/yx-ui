@@ -746,9 +746,9 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 	db := database.GetDB()
 	tx := db.Begin()
 	//Samyar
-	var err2 error
-	db2 := database.GetDB2()
-	tx2 := db2.Begin()
+	// var err2 error
+	// db2 := database.GetDB2()
+	// tx2 := db2.Begin()
 
 	defer func() {
 
@@ -756,16 +756,15 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 			logger.Error("1Woo")
 			tx.Rollback()
 		} else {
-			logger.Error("1Wooo")
 			tx.Commit()
 		}
 	}()
-	err2 = s.addInboundTraffic(tx2, inboundTraffics)
-	if err2 != nil {
-		logger.Error("1Wo")
-		logger.Error(err2)
-		return nil, false
-	}
+	// err2 = s.addInboundTraffic(tx2, inboundTraffics)
+	// if err2 != nil {
+	// 	logger.Error("1Wo")
+	// 	logger.Error(err2)
+	// 	return nil, false
+	// }
 	err = s.addClientTraffic(tx, clientTraffics)
 	if err != nil {
 		return err, false
