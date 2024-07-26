@@ -16,7 +16,6 @@ func (s *OutboundService) AddTraffic(traffics []*xray.Traffic, clientTraffics []
 	var err error
 	db := database.GetDB2()
 	tx := db.Begin()
-	logger.Error("2")
 
 	defer func() {
 		if err != nil {
@@ -28,7 +27,6 @@ func (s *OutboundService) AddTraffic(traffics []*xray.Traffic, clientTraffics []
 
 	err = s.addOutboundTraffic(tx, traffics)
 	if err != nil {
-		logger.Error("1")
 		return err, false
 	}
 

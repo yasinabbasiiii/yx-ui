@@ -744,16 +744,21 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 	var err error
 	db := database.GetDB()
 	tx := db.Begin()
+	//Samyar
+	db2 := database.GetDB2()
+	tx2 := db2.Begin()
 
 	defer func() {
+		logger.Error("1Woo")
 		if err != nil {
 			tx.Rollback()
 		} else {
 			tx.Commit()
 		}
 	}()
-	err = s.addInboundTraffic(tx, inboundTraffics)
+	err = s.addInboundTraffic(tx2, inboundTraffics)
 	if err != nil {
+		logger.Error("1Wo")
 		return err, false
 	}
 	err = s.addClientTraffic(tx, clientTraffics)
@@ -787,29 +792,29 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 func (s *InboundService) addInboundTraffic(tx *gorm.DB, traffics []*xray.Traffic) error {
 	//Samyar
 	//logger.Error(traffics)
-	// if len(traffics) == 0 {
-	// 	return nil
-	// }
+	if len(traffics) == 0 {
+		return nil
+	}
 
-	// var err error
+	var err error
 
-	// for _, traffic := range traffics {
-	// 	logger.Error(traffic)
-	// 	logger.Error(traffic.IsInbound)
-	// 	logger.Error(traffic.Tag)
-	// 	if traffic.IsInbound {
-	// 		if(traffic.Up >0 || traffic.Down >0){
-	// 			err = tx.Model(&model.Inbound{}).Where("tag = ?", traffic.Tag).
-	// 				Updates(map[string]interface{}{
-	// 					"up":   gorm.Expr("up + ?", traffic.Up),
-	// 					"down": gorm.Expr("down + ?", traffic.Down),
-	// 				}).Error
-	// 			if err != nil {
-	// 				return err
-	// 			}
-	// 	}
-	// }
-	// }
+	for _, traffic := range traffics {
+		logger.Error(traffic)
+		logger.Error(traffic.IsInbound)
+		logger.Error(traffic.Tag)
+		if traffic.IsInbound {
+			if traffic.Up > 0 || traffic.Down > 0 {
+				err = tx.Model(&model.Inbound{}).Where("tag = ?", traffic.Tag).
+					Updates(map[string]interface{}{
+						"up":   gorm.Expr("up + ?", traffic.Up),
+						"down": gorm.Expr("down + ?", traffic.Down),
+					}).Error
+				if err != nil {
+					return err
+				}
+			}
+		}
+	}
 	return nil
 }
 
