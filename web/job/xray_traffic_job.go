@@ -31,7 +31,7 @@ func (j *XrayTrafficJob) Run() {
 	}
 	err, needRestart1 := j.outboundService.AddTraffic(traffics, clientTraffics)
 	if err != nil {
-		logger.Warning("add outbound traffic failed:", err)
+		logger.Warning("add outbound traffic failed ss:", err)
 	}
 	if needRestart0 || needRestart1 {
 		j.xrayService.SetToNeedRestart()

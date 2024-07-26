@@ -763,6 +763,7 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 	err2 = s.addInboundTraffic(tx2, inboundTraffics)
 	if err2 != nil {
 		logger.Error("1Wo")
+		logger.Error(err2)
 		return nil, false
 	}
 	err = s.addClientTraffic(tx, clientTraffics)
