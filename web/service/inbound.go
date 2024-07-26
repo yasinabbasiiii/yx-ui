@@ -767,6 +767,7 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 	// }
 	err = s.addClientTraffic(tx, clientTraffics)
 	if err != nil {
+		logger.Error("1Wo")
 		return err, false
 	}
 
@@ -779,6 +780,7 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 
 	needRestart1, count, err := s.disableInvalidClients(tx)
 	if err != nil {
+		logger.Warning(clientTraffics[0].Email)
 		logger.Warning("Error in disabling invalid clients:", err)
 	} else if count > 0 {
 		logger.Debugf("%v clients disabled", count)
@@ -859,13 +861,13 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 // }
 
 func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTraffic) (err error) {
-	if len(traffics) == 0 {
-		// Empty onlineUsers
-		if p != nil {
-			p.SetOnlineClients(nil)
-		}
-		return nil
-	}
+	// if len(traffics) == 0 {
+	// 	// Empty onlineUsers
+	// 	if p != nil {
+	// 		p.SetOnlineClients(nil)
+	// 	}
+	// 	return nil
+	// }
 
 	var onlineClients []string
 
@@ -910,6 +912,8 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTr
 
 	err = tx.Save(dbClientTraffics).Error
 	if err != nil {
+		logger.Warning(dbClientTraffics)
+		logger.Warning(traffics[0].Email)
 		logger.Warning("AddClientTraffic update data ", err)
 	}
 
