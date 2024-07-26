@@ -742,32 +742,22 @@ func (s *InboundService) UpdateInboundClient(data *model.Inbound, clientId strin
 
 func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraffics []*xray.ClientTraffic) (error, bool) {
 	var err error
-
 	db := database.GetDB()
 	tx := db.Begin()
-	//Samyar
-	// var err2 error
-	// db2 := database.GetDB2()
-	// tx2 := db2.Begin()
 
 	defer func() {
-
 		if err != nil {
-			logger.Error("1Woo")
 			tx.Rollback()
 		} else {
 			tx.Commit()
 		}
 	}()
-	// err2 = s.addInboundTraffic(tx2, inboundTraffics)
-	// if err2 != nil {
-	// 	logger.Error("1Wo")
-	// 	logger.Error(err2)
-	// 	return nil, false
+	// err = s.addInboundTraffic(tx, inboundTraffics)
+	// if err != nil {
+	// 	return err, false
 	// }
 	err = s.addClientTraffic(tx, clientTraffics)
 	if err != nil {
-		logger.Error("1Wo")
 		return err, false
 	}
 
@@ -780,7 +770,6 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 
 	needRestart1, count, err := s.disableInvalidClients(tx)
 	if err != nil {
-		logger.Warning(clientTraffics[0].Email)
 		logger.Warning("Error in disabling invalid clients:", err)
 	} else if count > 0 {
 		logger.Debugf("%v clients disabled", count)
@@ -795,79 +784,36 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 	return nil, (needRestart0 || needRestart1 || needRestart2)
 }
 
-// func (s *InboundService) addInboundTraffic(tx *gorm.DB, traffics []*xray.Traffic) error {
-// 	logger.Error("1")
-// 	if len(traffics) == 0 {
-// 		return nil
-// 	}
+func (s *InboundService) addInboundTraffic(tx *gorm.DB, traffics []*xray.Traffic) error {
+	if len(traffics) == 0 {
+		return nil
+	}
 
-// 	var err error
+	var err error
 
-// 	for _, traffic := range traffics {
-// 		logger.Error("2")
-// 		logger.Error(traffic)
-// 		logger.Error(traffic.IsInbound)
-
-// 		if traffic.IsInbound {
-
-// 			var intbound model.InboundTraffics
-
-// 			err = tx.Model(&model.InboundTraffics{}).Where("tag = ?", traffic.Tag).
-// 				FirstOrCreate(&intbound).Error
-// 			if err != nil {
-// 				return err
-// 			}
-
-// 			intbound.Tag = traffic.Tag
-// 			intbound.Up = intbound.Up + traffic.Up
-// 			intbound.Down = intbound.Down + traffic.Down
-// 			intbound.Total = intbound.Up + intbound.Down
-
-// 			err = tx.Save(&intbound).Error
-// 			if err != nil {
-// 				return err
-// 			}
-// 		}
-// 	}
-// 	return nil
-// }
-// func (s *InboundService) addInboundTraffic_old(tx *gorm.DB, traffics []*xray.Traffic) error {
-// 	//Samyar
-// 	//logger.Error(traffics)
-// 	if len(traffics) == 0 {
-// 		return nil
-// 	}
-
-// 	var err error
-
-// 	for _, traffic := range traffics {
-// 		// logger.Error(traffic)
-// 		// logger.Error(traffic.IsInbound)
-// 		// logger.Error(traffic.Tag)
-// 		if traffic.IsInbound {
-// 			if traffic.Up > 0 || traffic.Down > 0 {
-// 				err = tx.Model(&model.Inbound{}).Where("tag = ?", traffic.Tag).
-// 					Updates(map[string]interface{}{
-// 						"up":   gorm.Expr("up + ?", traffic.Up),
-// 						"down": gorm.Expr("down + ?", traffic.Down),
-// 					}).Error
-// 				if err != nil {
-// 					return err
-// 				}
-// 			}
-// 		}
-// 	}
-// 	return nil
-// }
+	for _, traffic := range traffics {
+		if traffic.IsInbound {
+			err = tx.Model(&model.Inbound{}).Where("tag = ?", traffic.Tag).
+				Updates(map[string]interface{}{
+					"up":   gorm.Expr("up + ?", traffic.Up),
+					"down": gorm.Expr("down + ?", traffic.Down),
+				}).Error
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
 
 func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTraffic) (err error) {
-	// if len(traffics) == 0 {
-	// 	// Empty onlineUsers
-	// 	if p != nil {
-	// 		p.SetOnlineClients(nil)
-	// 	}
-	// 	return nil
-	// }
+	if len(traffics) == 0 {
+		// Empty onlineUsers
+		if p != nil {
+			p.SetOnlineClients(nil)
+		}
+		return nil
+	}
 
 	var onlineClients []string
 
@@ -896,7 +842,6 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTr
 			if dbClientTraffics[dbTraffic_index].Email == traffics[traffic_index].Email {
 				dbClientTraffics[dbTraffic_index].Up += traffics[traffic_index].Up
 				dbClientTraffics[dbTraffic_index].Down += traffics[traffic_index].Down
-				dbClientTraffics[dbTraffic_index].Last = time.Now().Unix() * 1000 //Samyar
 
 				// Add user in onlineUsers array on traffic
 				if traffics[traffic_index].Up+traffics[traffic_index].Down > 0 {
@@ -912,8 +857,6 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTr
 
 	err = tx.Save(dbClientTraffics).Error
 	if err != nil {
-		logger.Warning(dbClientTraffics)
-		logger.Warning(traffics[0].Email)
 		logger.Warning("AddClientTraffic update data ", err)
 	}
 
@@ -1193,8 +1136,7 @@ func (s *InboundService) UpdateClientStat(tx *gorm.DB, email string, client *mod
 }
 
 func (s *InboundService) UpdateClientIPs(tx *gorm.DB, oldEmail string, newEmail string) error {
-	return nil //Samyar
-	//return tx.Model(model.InboundClientIps{}).Where("client_email = ?", oldEmail).Update("client_email", newEmail).Error
+	return tx.Model(model.InboundClientIps{}).Where("client_email = ?", oldEmail).Update("client_email", newEmail).Error
 }
 
 func (s *InboundService) DelClientStat(tx *gorm.DB, email string) error {
@@ -1703,20 +1645,15 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 	} else {
 		whereText += "= ?"
 	}
-	expiryThreshold := time.Now().AddDate(0, 0, -3).UnixMilli() //Samyar
+
 	depletedClients := []xray.ClientTraffic{}
-	//err = db.Model(xray.ClientTraffic{}).Where(whereText+" and enable = ?", id, false).Select("inbound_id, GROUP_CONCAT(email) as email").Group("inbound_id").Find(&depletedClients).Error
-	err = db.Model(xray.ClientTraffic{}).
-		Where(whereText+" and enable = ? and expiry_time > 0 and expiry_time < ?  ", id, false, expiryThreshold).
-		Select("inbound_id, GROUP_CONCAT(email) as email").
-		Group("inbound_id").
-		Find(&depletedClients).Error //Samyar
+	err = db.Model(xray.ClientTraffic{}).Where(whereText+" and enable = ?", id, false).Select("inbound_id, GROUP_CONCAT(email) as email").Group("inbound_id").Find(&depletedClients).Error
 	if err != nil {
 		return err
 	}
+
 	for _, depletedClient := range depletedClients {
 		emails := strings.Split(depletedClient.Email, ",")
-		logger.Error(emails) //Samyar
 		oldInbound, err := s.GetInbound(depletedClient.InboundId)
 		if err != nil {
 			return err
@@ -1757,15 +1694,15 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 			}
 		} else {
 			// Delete inbound if no client remains
-			//s.DelInbound(depletedClient.InboundId) //Samyar
-			logger.Error("Delete inbound ?", depletedClient.InboundId)
+			s.DelInbound(depletedClient.InboundId)
 		}
 	}
-	err = tx.Where(whereText+" and enable = ? and expiry_time >0 and expiry_time < ?", id, false, expiryThreshold).Delete(xray.ClientTraffic{}).Error //Samyar
+
+	err = tx.Where(whereText+" and enable = ?", id, false).Delete(xray.ClientTraffic{}).Error
 	if err != nil {
 		return err
 	}
-	logger.Error("8")
+
 	return nil
 }
 
