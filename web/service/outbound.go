@@ -1,5 +1,6 @@
 package service
 
+//Samyar to db2
 import (
 	"x-ui/database"
 	"x-ui/database/model"
@@ -13,8 +14,9 @@ type OutboundService struct{}
 
 func (s *OutboundService) AddTraffic(traffics []*xray.Traffic, clientTraffics []*xray.ClientTraffic) (error, bool) {
 	var err error
-	db := database.GetDB()
+	db := database.GetDB2()
 	tx := db.Begin()
+	logger.Error("2")
 
 	defer func() {
 		if err != nil {
@@ -26,6 +28,7 @@ func (s *OutboundService) AddTraffic(traffics []*xray.Traffic, clientTraffics []
 
 	err = s.addOutboundTraffic(tx, traffics)
 	if err != nil {
+		logger.Error("1")
 		return err, false
 	}
 
@@ -65,7 +68,7 @@ func (s *OutboundService) addOutboundTraffic(tx *gorm.DB, traffics []*xray.Traff
 }
 
 func (s *OutboundService) GetOutboundsTraffic() ([]*model.OutboundTraffics, error) {
-	db := database.GetDB()
+	db := database.GetDB2()
 	var traffics []*model.OutboundTraffics
 
 	err := db.Model(model.OutboundTraffics{}).Find(&traffics).Error
@@ -78,7 +81,7 @@ func (s *OutboundService) GetOutboundsTraffic() ([]*model.OutboundTraffics, erro
 }
 
 func (s *OutboundService) ResetOutboundTraffic(tag string) error {
-	db := database.GetDB()
+	db := database.GetDB2()
 
 	whereText := "tag "
 	if tag == "-alltags-" {
