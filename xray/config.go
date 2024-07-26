@@ -3,6 +3,7 @@ package xray
 import (
 	"bytes"
 
+	"x-ui/logger"
 	"x-ui/util/json_util"
 )
 
@@ -23,6 +24,7 @@ type Config struct {
 }
 
 func (c *Config) Equals(other *Config) bool {
+	logger.Error("1")
 	if len(c.InboundConfigs) != len(other.InboundConfigs) {
 		return false
 	}
