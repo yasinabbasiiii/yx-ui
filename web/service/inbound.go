@@ -792,70 +792,71 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 	}
 	return nil, (needRestart0 || needRestart1 || needRestart2)
 }
-func (s *InboundService) addInboundTraffic(tx *gorm.DB, traffics []*xray.Traffic) error {
-	logger.Error("1")
-	if len(traffics) == 0 {
-		return nil
-	}
 
-	var err error
+// func (s *InboundService) addInboundTraffic(tx *gorm.DB, traffics []*xray.Traffic) error {
+// 	logger.Error("1")
+// 	if len(traffics) == 0 {
+// 		return nil
+// 	}
 
-	for _, traffic := range traffics {
-		logger.Error("2")
-		logger.Error(traffic)
-		logger.Error(traffic.IsInbound)
+// 	var err error
 
-		if traffic.IsInbound {
+// 	for _, traffic := range traffics {
+// 		logger.Error("2")
+// 		logger.Error(traffic)
+// 		logger.Error(traffic.IsInbound)
 
-			var intbound model.InboundTraffics
+// 		if traffic.IsInbound {
 
-			err = tx.Model(&model.InboundTraffics{}).Where("tag = ?", traffic.Tag).
-				FirstOrCreate(&intbound).Error
-			if err != nil {
-				return err
-			}
+// 			var intbound model.InboundTraffics
 
-			intbound.Tag = traffic.Tag
-			intbound.Up = intbound.Up + traffic.Up
-			intbound.Down = intbound.Down + traffic.Down
-			intbound.Total = intbound.Up + intbound.Down
+// 			err = tx.Model(&model.InboundTraffics{}).Where("tag = ?", traffic.Tag).
+// 				FirstOrCreate(&intbound).Error
+// 			if err != nil {
+// 				return err
+// 			}
 
-			err = tx.Save(&intbound).Error
-			if err != nil {
-				return err
-			}
-		}
-	}
-	return nil
-}
-func (s *InboundService) addInboundTraffic_old(tx *gorm.DB, traffics []*xray.Traffic) error {
-	//Samyar
-	//logger.Error(traffics)
-	if len(traffics) == 0 {
-		return nil
-	}
+// 			intbound.Tag = traffic.Tag
+// 			intbound.Up = intbound.Up + traffic.Up
+// 			intbound.Down = intbound.Down + traffic.Down
+// 			intbound.Total = intbound.Up + intbound.Down
 
-	var err error
+// 			err = tx.Save(&intbound).Error
+// 			if err != nil {
+// 				return err
+// 			}
+// 		}
+// 	}
+// 	return nil
+// }
+// func (s *InboundService) addInboundTraffic_old(tx *gorm.DB, traffics []*xray.Traffic) error {
+// 	//Samyar
+// 	//logger.Error(traffics)
+// 	if len(traffics) == 0 {
+// 		return nil
+// 	}
 
-	for _, traffic := range traffics {
-		// logger.Error(traffic)
-		// logger.Error(traffic.IsInbound)
-		// logger.Error(traffic.Tag)
-		if traffic.IsInbound {
-			if traffic.Up > 0 || traffic.Down > 0 {
-				err = tx.Model(&model.Inbound{}).Where("tag = ?", traffic.Tag).
-					Updates(map[string]interface{}{
-						"up":   gorm.Expr("up + ?", traffic.Up),
-						"down": gorm.Expr("down + ?", traffic.Down),
-					}).Error
-				if err != nil {
-					return err
-				}
-			}
-		}
-	}
-	return nil
-}
+// 	var err error
+
+// 	for _, traffic := range traffics {
+// 		// logger.Error(traffic)
+// 		// logger.Error(traffic.IsInbound)
+// 		// logger.Error(traffic.Tag)
+// 		if traffic.IsInbound {
+// 			if traffic.Up > 0 || traffic.Down > 0 {
+// 				err = tx.Model(&model.Inbound{}).Where("tag = ?", traffic.Tag).
+// 					Updates(map[string]interface{}{
+// 						"up":   gorm.Expr("up + ?", traffic.Up),
+// 						"down": gorm.Expr("down + ?", traffic.Down),
+// 					}).Error
+// 				if err != nil {
+// 					return err
+// 				}
+// 			}
+// 		}
+// 	}
+// 	return nil
+// }
 
 func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTraffic) (err error) {
 	if len(traffics) == 0 {
