@@ -751,10 +751,12 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 	tx2 := db2.Begin()
 
 	defer func() {
-		logger.Error("1Woo")
+
 		if err != nil {
+			logger.Error("1Woo")
 			tx.Rollback()
 		} else {
+			logger.Error("1Wooo")
 			tx.Commit()
 		}
 	}()
