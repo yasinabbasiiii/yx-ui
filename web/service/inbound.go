@@ -742,9 +742,11 @@ func (s *InboundService) UpdateInboundClient(data *model.Inbound, clientId strin
 
 func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraffics []*xray.ClientTraffic) (error, bool) {
 	var err error
+
 	db := database.GetDB()
 	tx := db.Begin()
 	//Samyar
+	var err2 error
 	db2 := database.GetDB2()
 	tx2 := db2.Begin()
 
@@ -756,10 +758,10 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 			tx.Commit()
 		}
 	}()
-	err = s.addInboundTraffic(tx2, inboundTraffics)
-	if err != nil {
+	err2 = s.addInboundTraffic(tx2, inboundTraffics)
+	if err2 != nil {
 		logger.Error("1Wo")
-		return err, false
+		return nil, false
 	}
 	err = s.addClientTraffic(tx, clientTraffics)
 	if err != nil {
