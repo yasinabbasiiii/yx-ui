@@ -793,8 +793,43 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 	}
 	return nil, (needRestart0 || needRestart1 || needRestart2)
 }
-
 func (s *InboundService) addInboundTraffic(tx *gorm.DB, traffics []*xray.Traffic) error {
+	logger.Error("1")
+	if len(traffics) == 0 {
+		return nil
+	}
+
+	var err error
+
+	for _, traffic := range traffics {
+		logger.Error("2")
+		logger.Error(traffic)
+		logger.Error(traffic.IsInbound)
+
+		if traffic.IsInbound {
+
+			var intbound model.InboundTraffics
+
+			err = tx.Model(&model.InboundTraffics{}).Where("tag = ?", traffic.Tag).
+				FirstOrCreate(&intbound).Error
+			if err != nil {
+				return err
+			}
+
+			intbound.Tag = traffic.Tag
+			intbound.Up = intbound.Up + traffic.Up
+			intbound.Down = intbound.Down + traffic.Down
+			intbound.Total = intbound.Up + intbound.Down
+
+			err = tx.Save(&intbound).Error
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+func (s *InboundService) addInboundTraffic_old(tx *gorm.DB, traffics []*xray.Traffic) error {
 	//Samyar
 	//logger.Error(traffics)
 	if len(traffics) == 0 {
