@@ -758,7 +758,7 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 	// }
 	err = s.addClientTraffic(tx, clientTraffics)
 	if err != nil {
-		logger.Error("1")
+		logger.Error("11")
 		return err, false
 	}
 
@@ -808,6 +808,7 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 // }
 
 func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTraffic) (err error) {
+	logger.Error("1")
 	// if len(traffics) == 0 {
 	// 	// Empty onlineUsers
 	// 	if p != nil {
@@ -859,6 +860,8 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTr
 
 	err = tx.Save(dbClientTraffics).Error
 	if err != nil {
+		logger.Error("2")
+
 		logger.Warning("AddClientTraffic update data ", err)
 	}
 
