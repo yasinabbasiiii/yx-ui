@@ -4,9 +4,11 @@ import (
 	"context"
 	"crypto/tls"
 	"embed"
+	"fmt"
 	"html/template"
 	"io"
 	"io/fs"
+	"math/rand"
 	"net"
 	"net/http"
 	"os"
@@ -256,8 +258,19 @@ func (s *Server) startTask() {
 
 	go func() {
 		time.Sleep(time.Second * 5)
+
+		// ایجاد یک generator محلی با استفاده از seed تصادفی
+		r := rand.New(rand.NewSource(time.Now().UnixNano()))
+
+		// ایجاد یک زمان‌بندی تصادفی بین 8 تا 10 دقیقه
+		minInterval := 8
+		maxInterval := 10
+		randomInterval := time.Duration(minInterval+r.Intn(maxInterval-minInterval+1)) * time.Minute
+
+		// فرمت کردن زمان‌بندی به صورت `@every` برای استفاده در کرون
+		schedule := fmt.Sprintf("@every %s", randomInterval)
 		// Statistics every 10 seconds, start the delay for 5 seconds for the first time, and staggered with the time to restart xray
-		s.cron.AddJob("@every 600s", job.NewXrayTrafficJob()) //samyar
+		s.cron.AddJob(schedule, job.NewXrayTrafficJob()) //samyar
 	}()
 
 	// check client ips from log file every 10 sec
