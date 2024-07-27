@@ -758,7 +758,6 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 	// }
 	err = s.addClientTraffic(tx, clientTraffics)
 	if err != nil {
-		logger.Error("11")
 		return err, false
 	}
 
@@ -808,7 +807,6 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 // }
 
 func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTraffic) (err error) {
-	logger.Error("1")
 	// if len(traffics) == 0 {
 	// 	// Empty onlineUsers
 	// 	if p != nil {
@@ -860,8 +858,6 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTr
 
 	err = tx.Save(dbClientTraffics).Error
 	if err != nil {
-		logger.Error("2")
-
 		logger.Warning("AddClientTraffic update data ", err)
 	}
 
@@ -1141,7 +1137,8 @@ func (s *InboundService) UpdateClientStat(tx *gorm.DB, email string, client *mod
 }
 
 func (s *InboundService) UpdateClientIPs(tx *gorm.DB, oldEmail string, newEmail string) error {
-	return tx.Model(model.InboundClientIps{}).Where("client_email = ?", oldEmail).Update("client_email", newEmail).Error
+	return nil //Samyar
+	//return tx.Model(model.InboundClientIps{}).Where("client_email = ?", oldEmail).Update("client_email", newEmail).Error
 }
 
 func (s *InboundService) DelClientStat(tx *gorm.DB, email string) error {
@@ -1633,7 +1630,7 @@ func (s *InboundService) ResetAllTraffics() error {
 	return err
 }
 
-func (s *InboundService) DelDepletedClients(id int) (err error) {
+func (s *InboundService) DelDepletedClients(id int) (err error) { //Samyar
 	db := database.GetDB()
 	tx := db.Begin()
 	defer func() {
@@ -1652,13 +1649,20 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 	}
 
 	depletedClients := []xray.ClientTraffic{}
-	err = db.Model(xray.ClientTraffic{}).Where(whereText+" and enable = ?", id, false).Select("inbound_id, GROUP_CONCAT(email) as email").Group("inbound_id").Find(&depletedClients).Error
+	//err = db.Model(xray.ClientTraffic{}).Where(whereText+" and enable = ?", id, false).Select("inbound_id, GROUP_CONCAT(email) as email").Group("inbound_id").Find(&depletedClients).Error
+	expiryThreshold := time.Now().AddDate(0, 0, -3).UnixMilli() //Samyar
+	err = db.Model(xray.ClientTraffic{}).
+		Where(whereText+" and enable = ? and expiry_time > 0 and expiry_time < ?  ", id, false, expiryThreshold).
+		Select("inbound_id, GROUP_CONCAT(email) as email").
+		Group("inbound_id").
+		Find(&depletedClients).Error //Samyar
 	if err != nil {
 		return err
 	}
 
 	for _, depletedClient := range depletedClients {
 		emails := strings.Split(depletedClient.Email, ",")
+		logger.Error(emails) //Samyar
 		oldInbound, err := s.GetInbound(depletedClient.InboundId)
 		if err != nil {
 			return err
@@ -1699,11 +1703,13 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 			}
 		} else {
 			// Delete inbound if no client remains
-			s.DelInbound(depletedClient.InboundId)
+			//s.DelInbound(depletedClient.InboundId)
+			logger.Error("Delete inbound ?", depletedClient.InboundId)
 		}
 	}
 
-	err = tx.Where(whereText+" and enable = ?", id, false).Delete(xray.ClientTraffic{}).Error
+	//err = tx.Where(whereText+" and enable = ?", id, false).Delete(xray.ClientTraffic{}).Error
+	err = tx.Where(whereText+" and enable = ? and expiry_time >0 and expiry_time < ?", id, false, expiryThreshold).Delete(xray.ClientTraffic{}).Error //Samyar
 	if err != nil {
 		return err
 	}

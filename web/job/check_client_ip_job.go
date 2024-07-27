@@ -81,32 +81,33 @@ func (j *CheckClientIpJob) clearAccessLog() {
 }
 
 func (j *CheckClientIpJob) hasLimitIp() bool {
-	db := database.GetDB()
-	var inbounds []*model.Inbound
+	return false //Samayar
+	// db := database.GetDB()
+	// var inbounds []*model.Inbound
 
-	err := db.Model(model.Inbound{}).Find(&inbounds).Error
-	if err != nil {
-		return false
-	}
+	// err := db.Model(model.Inbound{}).Find(&inbounds).Error
+	// if err != nil {
+	// 	return false
+	// }
 
-	for _, inbound := range inbounds {
-		if inbound.Settings == "" {
-			continue
-		}
+	// for _, inbound := range inbounds {
+	// 	if inbound.Settings == "" {
+	// 		continue
+	// 	}
 
-		settings := map[string][]model.Client{}
-		json.Unmarshal([]byte(inbound.Settings), &settings)
-		clients := settings["clients"]
+	// 	settings := map[string][]model.Client{}
+	// 	json.Unmarshal([]byte(inbound.Settings), &settings)
+	// 	clients := settings["clients"]
 
-		for _, client := range clients {
-			limitIp := client.LimitIP
-			if limitIp > 0 {
-				return true
-			}
-		}
-	}
+	// 	for _, client := range clients {
+	// 		limitIp := client.LimitIP
+	// 		if limitIp > 0 {
+	// 			return true
+	// 		}
+	// 	}
+	// }
 
-	return false
+	// return false
 }
 
 func (j *CheckClientIpJob) processLogFile() bool {
