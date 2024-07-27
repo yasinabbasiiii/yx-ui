@@ -266,7 +266,7 @@ func (s *Server) startTask() {
 		minInterval := 420
 		maxInterval := 600
 		randomInterval := time.Duration(minInterval+r.Intn(maxInterval-minInterval+1)) * time.Second
-		logger.Error("Cron ? s", randomInterval)
+		logger.Error(fmt.Sprintf("@every %s", randomInterval))
 		// فرمت کردن زمان‌بندی به صورت `@every` برای استفاده در کرون
 		schedule := fmt.Sprintf("@every %s", randomInterval)
 		// Statistics every 10 seconds, start the delay for 5 seconds for the first time, and staggered with the time to restart xray
