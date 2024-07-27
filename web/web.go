@@ -257,7 +257,7 @@ func (s *Server) startTask() {
 	go func() {
 		time.Sleep(time.Second * 5)
 		// Statistics every 10 seconds, start the delay for 5 seconds for the first time, and staggered with the time to restart xray
-		s.cron.AddJob("@every 200s", job.NewXrayTrafficJob()) //samyar
+		s.cron.AddJob("@every 600s", job.NewXrayTrafficJob()) //samyar
 	}()
 
 	// check client ips from log file every 10 sec
