@@ -7,4 +7,5 @@ type ClientTrafficDetails struct {
 	Up     int64  `json:"up" form:"up"`
 	Down   int64  `json:"down" form:"down"`
 	Total  int64  `json:"total" form:"total"`
+	Last   int64  `json:"last" form:"last"`
 }
