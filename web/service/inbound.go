@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -597,7 +598,7 @@ func (s *InboundService) UpdateInboundClient(data *model.Inbound, clientId strin
 	//logger.Error("1UpdateInboundClient")
 	//logger.Error(data)
 	clients, err := s.GetClients(data)
-	logger.Error(clients)
+	//logger.Error(clients)
 	if err != nil {
 		return false, err
 	}
@@ -869,7 +870,11 @@ func (s *InboundService) addClientTraffic2(tx *gorm.DB, traffics []*xray.ClientT
 	return nil
 }
 func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTraffic) (err error) {
-	logger.Debug("1")
+
+	server, err := os.Hostname()
+	if err != nil {
+		server = ""
+	}
 	emails := make([]string, len(traffics))
 	emailTrafficMap := make(map[string]*xray.ClientTraffic, len(traffics))
 
@@ -887,7 +892,7 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTr
 	if len(dbClientTraffics) == 0 {
 		return nil
 	}
-	logger.Debug("2")
+
 	dbClientTraffics, err = s.adjustTraffics(tx, dbClientTraffics)
 	if err != nil {
 		return err
@@ -908,26 +913,25 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTr
 				Down:   incomingTraffic.Down,
 				Total:  incomingTraffic.Up + incomingTraffic.Down,
 				Enable: dbTraffic.Enable,
+				Server: server,
 				Last:   time.Now().Unix() * 1000, // Update the last activity timestamp
 			}
 			newDetailsRecords = append(newDetailsRecords, newDetail)
 		}
 	}
-	logger.Debug("3")
+
 	if err := tx.Save(&dbClientTraffics).Error; err != nil {
 		logger.Warning("AddClientTraffic update data ", err)
 		return err
 	}
-	logger.Debug("4")
+
 	// Save new records in ClientTrafficDetails
 	if len(newDetailsRecords) > 0 {
-		logger.Debug("5")
 		if err := tx.Create(&newDetailsRecords).Error; err != nil {
 			logger.Warning("AddClientTraffic insert details data ", err)
-			return err
+			//return err
 		}
 	}
-	logger.Debug("6")
 	return nil
 }
 
