@@ -9,6 +9,7 @@ import (
 
 	"x-ui/config"
 	"x-ui/database/model"
+
 	"x-ui/xray"
 
 	"gorm.io/driver/mysql" //samyar
@@ -97,7 +98,13 @@ func InitDB(dbPath string) error {
 	dsn := "yas:Yas2566*7425@tcp(db.ir107.ir:3306)/x_ui"
 	db, err = gorm.Open(mysql.Open(dsn), c)
 	if err != nil {
-		return err
+		//logger.Error = "connect to db failed, trying to connect to db1"
+		dsn := "yas:Yas2566*7425@tcp(db1.ir107.ir:3306)/x_ui"
+		db, err = gorm.Open(mysql.Open(dsn), c)
+		if err != nil {
+			//logger.Error("connect to db1 failed!")
+			return err
+		}
 	}
 
 	// اتصال به SQLite
