@@ -809,7 +809,7 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 // 	return nil
 // }
 
-func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTraffic) (err error) {
+func (s *InboundService) addClientTraffic2(tx *gorm.DB, traffics []*xray.ClientTraffic) (err error) {
 	// if len(traffics) == 0 {
 	// 	// Empty onlineUsers
 	// 	if p != nil {
@@ -866,6 +866,68 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTr
 		logger.Warning("AddClientTraffic update data ", err)
 	}
 
+	return nil
+}
+func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTraffic) (err error) {
+	logger.Debug("1")
+	emails := make([]string, len(traffics))
+	emailTrafficMap := make(map[string]*xray.ClientTraffic, len(traffics))
+
+	for i, traffic := range traffics {
+		emails[i] = traffic.Email
+		emailTrafficMap[traffic.Email] = traffic
+	}
+
+	var dbClientTraffics []*xray.ClientTraffic
+	err = tx.Model(&xray.ClientTraffic{}).Where("email IN (?)", emails).Find(&dbClientTraffics).Error
+	if err != nil {
+		return err
+	}
+
+	if len(dbClientTraffics) == 0 {
+		return nil
+	}
+	logger.Debug("2")
+	dbClientTraffics, err = s.adjustTraffics(tx, dbClientTraffics)
+	if err != nil {
+		return err
+	}
+
+	// Prepare new records for ClientTrafficDetails
+	var newDetailsRecords []*xray.ClientTrafficDetails
+	for _, dbTraffic := range dbClientTraffics {
+		if incomingTraffic, found := emailTrafficMap[dbTraffic.Email]; found {
+			dbTraffic.Up += incomingTraffic.Up
+			dbTraffic.Down += incomingTraffic.Down
+			dbTraffic.Last = time.Now().Unix() * 1000 // Update the last activity timestamp
+
+			// Create a new record for ClientTrafficDetails
+			newDetail := &xray.ClientTrafficDetails{
+				Email:  dbTraffic.Email,
+				Up:     incomingTraffic.Up,
+				Down:   incomingTraffic.Down,
+				Total:  incomingTraffic.Up + incomingTraffic.Down,
+				Enable: dbTraffic.Enable,
+				Last:   time.Now().Unix() * 1000, // Update the last activity timestamp
+			}
+			newDetailsRecords = append(newDetailsRecords, newDetail)
+		}
+	}
+	logger.Debug("3")
+	if err := tx.Save(&dbClientTraffics).Error; err != nil {
+		logger.Warning("AddClientTraffic update data ", err)
+		return err
+	}
+	logger.Debug("4")
+	// Save new records in ClientTrafficDetails
+	if len(newDetailsRecords) > 0 {
+		logger.Debug("5")
+		if err := tx.Create(&newDetailsRecords).Error; err != nil {
+			logger.Warning("AddClientTraffic insert details data ", err)
+			return err
+		}
+	}
+	logger.Debug("6")
 	return nil
 }
 
