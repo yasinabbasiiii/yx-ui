@@ -27,6 +27,7 @@ var initializers = []func() error{
 	initSetting,
 	initInboundClientIps,
 	initClientTraffic,
+	initClientTrafficDetails,
 }
 
 func initUser() error {
@@ -70,6 +71,10 @@ func initClientTraffic() error {
 	return db2.AutoMigrate(&xray.ClientTraffic{})
 }
 
+// Samyar
+func initClientTrafficDetails() error {
+	return db2.AutoMigrate(&xray.ClientTrafficDetails{})
+}
 func InitDB(dbPath string) error {
 	dir := path.Dir(dbPath)
 	err := os.MkdirAll(dir, fs.ModePerm)

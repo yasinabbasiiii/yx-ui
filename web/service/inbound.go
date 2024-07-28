@@ -594,7 +594,10 @@ func (s *InboundService) DelInboundClient(inboundId int, clientId string) (bool,
 }
 
 func (s *InboundService) UpdateInboundClient(data *model.Inbound, clientId string) (bool, error) {
+	logger.Error("1UpdateInboundClient")
+	logger.Error(data)
 	clients, err := s.GetClients(data)
+	logger.Error(clients)
 	if err != nil {
 		return false, err
 	}
@@ -817,9 +820,9 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTr
 
 	//var onlineClients []string
 
-	emails := make([]string, 0, len(traffics))
-	for _, traffic := range traffics {
-		emails = append(emails, traffic.Email)
+	emails := make([]string, len(traffics))
+	for i, traffic := range traffics {
+		emails[i] = traffic.Email
 	}
 	dbClientTraffics := make([]*xray.ClientTraffic, 0, len(traffics))
 	err = tx.Model(xray.ClientTraffic{}).Where("email IN (?)", emails).Find(&dbClientTraffics).Error
@@ -856,6 +859,7 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTr
 	// Set onlineUsers
 	//p.SetOnlineClients(onlineClients)
 
+	logger.Error(dbClientTraffics)
 	err = tx.Save(dbClientTraffics).Error
 	if err != nil {
 		logger.Warning("AddClientTraffic update data ", err)
