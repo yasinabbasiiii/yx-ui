@@ -843,7 +843,7 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTr
 	for dbTraffic_index := range dbClientTraffics {
 		logger.Debug(dbClientTraffics[dbTraffic_index])
 		for traffic_index := range traffics {
-			logger.Debug(traffics[traffic_index])
+			//logger.Debug(traffics[traffic_index])
 			if dbClientTraffics[dbTraffic_index].Email == traffics[traffic_index].Email {
 				dbClientTraffics[dbTraffic_index].Up += traffics[traffic_index].Up
 				dbClientTraffics[dbTraffic_index].Down += traffics[traffic_index].Down
