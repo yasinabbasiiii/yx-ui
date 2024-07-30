@@ -905,18 +905,19 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTr
 			dbTraffic.Up += incomingTraffic.Up
 			dbTraffic.Down += incomingTraffic.Down
 			dbTraffic.Last = time.Now().Unix() * 1000 // Update the last activity timestamp
-
-			// Create a new record for ClientTrafficDetails
-			newDetail := &xray.ClientTrafficDetails{
-				Email:  dbTraffic.Email,
-				Up:     incomingTraffic.Up,
-				Down:   incomingTraffic.Down,
-				Total:  incomingTraffic.Up + incomingTraffic.Down,
-				Enable: dbTraffic.Enable,
-				Server: server,
-				Last:   time.Now().Unix() * 1000, // Update the last activity timestamp
+			if incomingTraffic.Up+incomingTraffic.Down > 0 {
+				// Create a new record for ClientTrafficDetails
+				newDetail := &xray.ClientTrafficDetails{
+					Email:  dbTraffic.Email,
+					Up:     incomingTraffic.Up,
+					Down:   incomingTraffic.Down,
+					Total:  incomingTraffic.Up + incomingTraffic.Down,
+					Enable: dbTraffic.Enable,
+					Server: server,
+					Last:   time.Now().Unix() * 1000, // Update the last activity timestamp
+				}
+				newDetailsRecords = append(newDetailsRecords, newDetail)
 			}
-			newDetailsRecords = append(newDetailsRecords, newDetail)
 		}
 	}
 

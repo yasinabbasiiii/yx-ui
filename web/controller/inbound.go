@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"x-ui/database/model"
+	"x-ui/logger"
 	"x-ui/web/service"
 	"x-ui/web/session"
 
@@ -225,6 +226,7 @@ func (a *InboundController) updateInboundClient(c *gin.Context) {
 }
 
 func (a *InboundController) resetClientTraffic(c *gin.Context) {
+	logger.Debug("resetClientTraffic")
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		jsonMsg(c, I18nWeb(c, "pages.inbounds.update"), err)

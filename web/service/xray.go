@@ -210,6 +210,7 @@ func (s *XrayService) StopXray() error {
 }
 
 func (s *XrayService) SetToNeedRestart() {
+	logger.Debug("SetToNeedRestart")
 	isNeedXrayRestart.Store(true)
 }
 
