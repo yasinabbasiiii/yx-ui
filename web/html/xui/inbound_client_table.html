@@ -121,10 +121,10 @@
   </template>
 </template>
 <template slot="last" slot-scope="text, client, index">
-  <template v-if="client.last !=0 && client.reset >0">
+  <template v-if="client.expiryTime !=0 && client.reset >0">
     <a-popover :overlay-class-name="themeSwitcher.currentTheme">
       <template slot="content">
-        <span v-if="client.last < 0">{{ i18n "pages.client.delayedStart" }}
+        <span v-if="client.expiryTime < 0">{{ i18n "pages.client.delayedStart" }}
         </span>
         <span v-else>[[ DateUtil.formatMillis(client._expiryTime) ]]</span>
       </template>
@@ -132,7 +132,7 @@
         <tr class="tr-table-box">
           <td class="tr-table-rt"> [[ remainedDays(client.expiryTime) ]] </td>
           <td class="infinite-bar tr-table-bar">
-            <a-progress :show-info="false" :status="isClientEnabled(record, client.email)? 'exception' : ''" :percent="expireProgress(client.last, client.reset)" />
+            <a-progress :show-info="false" :status="isClientEnabled(record, client.email)? 'exception' : ''" :percent="expireProgress(client.expiryTime, client.reset)" />
           </td>
           <td class="tr-table-lt">[[ client.reset + "d" ]]</td>
         </tr>
