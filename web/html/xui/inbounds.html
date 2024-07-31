@@ -123,6 +123,7 @@
 </style>
 
 <body>
+ test
 <a-layout id="app" v-cloak :class="themeSwitcher.currentTheme">
   {{ template "commonSider" . }}
   <a-layout id="content-layout">
@@ -679,7 +680,7 @@
                     return;
                 }
 
-                await this.getOnlineUsers();
+               // await this.getOnlineUsers();
                 this.setInbounds(msg.obj);
                 setTimeout(() => {
                     this.refreshing = false;
