@@ -497,7 +497,7 @@
                         </td>
                       </tr>
                       <tr>
-                        <td>{{ i18n "pages.inbounds.expireDate" }} <p>test</p></td>
+                        <td>{{ i18n "pages.inbounds.expireDate" }} </td>
                         <td>
                           <a-tag style="min-width: 50px; text-align: center;" v-if="dbInbound.expiryTime > 0" :color="dbInbound.isExpiry? 'red': 'blue'">
                             [[ DateUtil.formatMillis(dbInbound.expiryTime) ]]
