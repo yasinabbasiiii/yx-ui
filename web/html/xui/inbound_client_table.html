@@ -1,5 +1,4 @@
 {{define "client_table"}}
-test
 <template slot="actions" slot-scope="text, client, index">
   <a-tooltip>
     <template slot="title">{{ i18n "qrCode" }}</template>
@@ -54,6 +53,7 @@ test
 <template slot="traffic" slot-scope="text, client">
   <a-popover :overlay-class-name="themeSwitcher.currentTheme">
     <template slot="content" v-if="client.email">
+      <p>test</p>
       <table cellpadding="2" width="100%">
         <tr>
           <td>↑[[ sizeFormat(getUpStats(record, client.email)) ]]</td>
