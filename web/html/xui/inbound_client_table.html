@@ -95,7 +95,7 @@
       </template>
       <table>
         <tr class="tr-table-box">
-          <td class="tr-table-rt"> [[ remainedDays(client.expiryTime) ]] </td>
+          <td class="tr-table-rt">  </td>
           <td class="infinite-bar tr-table-bar">
             <a-progress :show-info="false" :status="isClientEnabled(record, client.email)? 'exception' : ''" :percent="expireProgress(client.expiryTime, client.reset)" />
           </td>
@@ -120,7 +120,7 @@
     </a-tag>
   </template>
 </template>
-<!-- Samyar -->
+<!-- //Samyar -->
 <template slot="last" slot-scope="text, client, index">
   [[ getClientLast(record, client.email) ]]
 </template>
