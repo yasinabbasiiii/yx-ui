@@ -120,8 +120,9 @@
     </a-tag>
   </template>
 </template>
+<!-- Samyar -->
 <template slot="last" slot-scope="text, client, index">
- last [[ getClientLast(record, client.email) ]]
+  [[ getClientLast(record, client.email) ]]
 </template>
 <template slot="actionMenu" slot-scope="text, client, index">
   <a-dropdown :trigger="['click']">

@@ -1285,7 +1285,7 @@
             },
             getClientLast(dbInbound, email) {
                 clientStats = dbInbound.clientStats ? dbInbound.clientStats.find(stats => stats.email === email) : null;
-                return clientStats ? clientStats['last'] : 0;
+                return clientStats ?  formatSecond(clientStats['last']/-1000) : 0;
             },
             isClientOnline(email) {
                 return this.onlineClients.includes(email);
