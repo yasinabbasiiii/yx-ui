@@ -125,6 +125,7 @@
  [[client.expiryTime]] -[[client._expiryTime]] - [[client.last]] - 
   [[ DateUtil.formatMillis(getClientLast(record, client.email)) ]]  - 
   [[ getClientLast(record, client.email) ]] - [[ remainedDays(getClientLast(record, client.email)) ]]
+  - [[ remainedDays2(getClientLast(record, client.email)) ]]
 </template>
 <template slot="actionMenu" slot-scope="text, client, index">
   <a-dropdown :trigger="['click']">
