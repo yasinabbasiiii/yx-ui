@@ -9,6 +9,7 @@ class DBInbound {
         this.remark = "";
         this.enable = true;
         this.expiryTime = 0;
+        this.last = 0;
 
         this.listen = "";
         this.port = 0;
@@ -73,6 +74,12 @@ class DBInbound {
             return null;
         }
         return moment(this.expiryTime);
+    }
+     get _last() {
+        if (this.last === 0) {
+            return null;
+        }
+        return moment(this.last);
     }
 
     set _expiryTime(t) {
