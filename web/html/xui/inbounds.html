@@ -1262,6 +1262,12 @@
                 if (expTime < now) return '{{ i18n "depleted" }}';
                 return formatSecond((expTime-now)/1000);
             },
+            getClientLast(dbInbound, email) {
+                clientStats = dbInbound.clientStats ? dbInbound.clientStats.find(stats => stats.email === email) : null;
+                now = new Date().getTime();
+               // return clientStats ?  formatSecond(clientStats['last']-now/-1000) : 0;
+                return clientStats ?  clientStats['last'] : 0;
+            },
             statsExpColor(dbInbound, email){
                 if (email.length == 0) return '#7a316f';
                 clientStats = dbInbound.clientStats.find(stats => stats.email === email);
@@ -1283,11 +1289,7 @@
                 clientStats = dbInbound.clientStats ? dbInbound.clientStats.find(stats => stats.email === email) : null;
                 return clientStats ? clientStats['enable'] : true;
             },
-            getClientLast(dbInbound, email) {
-                clientStats = dbInbound.clientStats ? dbInbound.clientStats.find(stats => stats.email === email) : null;
-                now = new Date().getTime();
-                return clientStats ?  formatSecond(clientStats['last']-now/-1000) : 0;
-            },
+           
             isClientOnline(email) {
                 return this.onlineClients.includes(email);
             },
