@@ -87,6 +87,7 @@
 </template>
 <template slot="expiryTime" slot-scope="text, client, index">
   <template v-if="client.expiryTime !=0 && client.reset >0">
+    <p>tam</p>
     <a-popover :overlay-class-name="themeSwitcher.currentTheme">
       <template slot="content">
         <span v-if="client.expiryTime < 0">{{ i18n "pages.client.delayedStart" }}
@@ -105,6 +106,7 @@
     </a-popover>
   </template>
   <template v-else>
+    <p>sam</p>
     <a-popover v-if="client.expiryTime != 0" :overlay-class-name="themeSwitcher.currentTheme">
       <template slot="content">
         <span v-if="client.expiryTime < 0">{{ i18n "pages.client.delayedStart" }}
@@ -122,9 +124,9 @@
 </template>
 <!-- //Samyar -->
 <template slot="last" slot-scope="text, client, index">
- [[client.expiryTime]] -[[client._expiryTime]] - [[client.last]] - 
-  [[ DateUtil.formatMillis(getClientLast(record, client.email)) ]]  - 
-  [[ getClientLast(record, client.email) ]] - [[ remainedDays(getClientLast(record, client.email)) ]]
+ 
+  [[ DateUtil.formatMillis(getClientLast(record, client.email)) ]]  
+
   - [[ remainedDays2(getClientLast(record, client.email)) ]]
 </template>
 <template slot="actionMenu" slot-scope="text, client, index">
