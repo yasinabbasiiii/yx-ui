@@ -121,7 +121,7 @@
   </template>
 </template>
 <template slot="last" slot-scope="text, client, index">
-  [[ client.last ]]
+  [[ getClientLast(record, client.email) ]]
 </template>
 <template slot="actionMenu" slot-scope="text, client, index">
   <a-dropdown :trigger="['click']">

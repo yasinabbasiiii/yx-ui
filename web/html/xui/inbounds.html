@@ -1283,6 +1283,10 @@
                 clientStats = dbInbound.clientStats ? dbInbound.clientStats.find(stats => stats.email === email) : null;
                 return clientStats ? clientStats['enable'] : true;
             },
+            getClientLast(dbInbound, email) {
+                clientStats = dbInbound.clientStats ? dbInbound.clientStats.find(stats => stats.email === email) : null;
+                return clientStats ? clientStats['last'] : 0;
+            },
             isClientOnline(email) {
                 return this.onlineClients.includes(email);
             },
