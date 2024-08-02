@@ -1262,7 +1262,7 @@
                 if (expTime < now) return '{{ i18n "depleted" }}';
                 return formatSecond((expTime-now)/1000);
             },
-            remainedDays2(expTime){
+            remainedDays2(expTime){ //Samyar
                 if (expTime == 0) return null;
                 if (expTime < 0) return formatSecond(expTime/-1000);
                 now = new Date().getTime();

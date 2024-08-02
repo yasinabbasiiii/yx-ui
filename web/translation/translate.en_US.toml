@@ -188,6 +188,7 @@
 "exportInbound" = "Export Inbound"
 "import" = "Import"
 "importInbound" = "Import an Inbound"
+"last" = "Last"
 
 [pages.client]
 "add" = "Add Client"
