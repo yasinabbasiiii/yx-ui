@@ -95,7 +95,7 @@
       </template>
       <table>
         <tr class="tr-table-box">
-          <td class="tr-table-rt"> [[ remainedDays(client.expiryTime) ]] </td>
+          <td class="tr-table-rt">& [[ remainedDays(client.expiryTime) ]] </td>
           <td class="infinite-bar tr-table-bar">
             <a-progress :show-info="false" :status="isClientEnabled(record, client.email)? 'exception' : ''" :percent="expireProgress(client.expiryTime, client.reset)" />
           </td>
@@ -223,7 +223,7 @@
                   </span>
                   <span v-else>[[ DateUtil.formatMillis(client._expiryTime) ]]</span>
                 </template>
-                <a-tag style="min-width: 50px; border: none;" :color="userExpiryColor(app.expireDiff, client, themeSwitcher.isDarkTheme)"> [[ remainedDays(client.expiryTime) ]] </a-tag>
+                <a-tag style="min-width: 50px; border: none;" :color="userExpiryColor(app.expireDiff, client, themeSwitcher.isDarkTheme)"> + [[ remainedDays(client.expiryTime) ]] </a-tag>
               </a-popover>
               <a-tag v-else :color="client.enable ? 'purple' : themeSwitcher.isDarkTheme ? '#2c3950' : '#bcbcbc'" class="infinite-tag">
                 <svg height="10px" width="14px" viewBox="0 0 640 512" fill="currentColor">
