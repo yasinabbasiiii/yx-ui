@@ -29,7 +29,6 @@ var initializers = []func() error{
 	initSetting,
 	initInboundClientIps,
 	initClientTraffic,
-	initClientTrafficDetails,
 }
 
 func initUser() error {
