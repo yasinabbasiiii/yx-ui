@@ -931,16 +931,15 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, tx3 *gorm.DB, traffics []
 
 	// Save new records in ClientTrafficDetails
 	if len(newDetailsRecords) > 0 {
-		logger.Warning("1", err)
-		logger.Warning(newDetailsRecords[0])
-		logger.Warning(newDetailsRecords[1])
-		logger.Warning(newDetailsRecords[3])
-		logger.Warning(len(newDetailsRecords))
+
 		if err := tx3.Create(&newDetailsRecords).Error; err != nil {
 			logger.Warning("AddClientTraffic insert details data ", err)
 			//return err
 		}
-		logger.Warning("2", err)
+		if err := tx3.Save(&newDetailsRecords).Error; err != nil {
+			logger.Warning("save data ", err)
+			//return err
+		}
 	}
 	return nil
 }
