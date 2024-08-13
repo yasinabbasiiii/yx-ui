@@ -74,9 +74,10 @@ func initClientTraffic() error {
 }
 
 // Samyar
-func initClientTrafficDetails() error {
-	return db3.AutoMigrate(&xray.ClientTrafficDetails{})
-}
+//
+//	func initClientTrafficDetails() error {
+//		return db3.AutoMigrate(&xray.ClientTrafficDetails{})
+//	}
 func InitDB(dbPath string) error {
 	dir := path.Dir(dbPath)
 	err := os.MkdirAll(dir, fs.ModePerm)
