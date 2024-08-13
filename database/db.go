@@ -108,10 +108,10 @@ func InitDB(dbPath string) error {
 		}
 	}
 	// اتصال به MySQL
-	db3, err = gorm.Open(mysql.Open("yas:Yas2566*7425@tcp(db.ir107.ir:3306)/x_ui_2"), c)
+	db3, err = gorm.Open(mysql.Open("yas:Yas2566*7425@tcp(db.ir107.ir:3306)/x_ui_3"), c)
 	if err != nil {
 		//logger.Error = "connect to db failed, trying to connect to db1"
-		db3, err = gorm.Open(mysql.Open("yas:Yas2566*7425@tcp(db1.ir107.ir:3306)/x_ui_2"), c)
+		db3, err = gorm.Open(mysql.Open("yas:Yas2566*7425@tcp(db1.ir107.ir:3306)/x_ui_3"), c)
 		if err != nil {
 			//logger.Error("connect to db1 failed!")
 			return err
