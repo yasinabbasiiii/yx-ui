@@ -753,6 +753,7 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 
 	defer func() {
 		if err != nil {
+			logger.Debug("3")
 			tx.Rollback()
 		} else {
 			tx.Commit()
@@ -930,10 +931,13 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, tx3 *gorm.DB, traffics []
 
 	// Save new records in ClientTrafficDetails
 	if len(newDetailsRecords) > 0 {
+		logger.Warning("1", err)
+
 		if err := tx3.Create(&newDetailsRecords).Error; err != nil {
 			logger.Warning("AddClientTraffic insert details data ", err)
 			//return err
 		}
+		logger.Warning("2", err)
 	}
 	return nil
 }
