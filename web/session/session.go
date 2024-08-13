@@ -4,7 +4,6 @@ import (
 	"encoding/gob"
 
 	"x-ui/database/model"
-	"x-ui/logger"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -44,7 +43,7 @@ func GetLoginUser(c *gin.Context) *model.User {
 }
 
 func IsLogin(c *gin.Context) bool {
-	logger.Debug("333")
+	//logger.Debug("333")
 	return GetLoginUser(c) != nil
 }
 
