@@ -747,7 +747,9 @@ func (s *InboundService) UpdateInboundClient(data *model.Inbound, clientId strin
 func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraffics []*xray.ClientTraffic) (error, bool) {
 	var err error
 	db := database.GetDB()
+	db3 := database.GetDB3()
 	tx := db.Begin()
+	tx3 := db3.Begin()
 
 	defer func() {
 		if err != nil {
@@ -760,7 +762,7 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 	// if err != nil {
 	// 	return err, false
 	// }
-	err = s.addClientTraffic(tx, clientTraffics)
+	err = s.addClientTraffic(tx, tx3, clientTraffics)
 	if err != nil {
 		return err, false
 	}
@@ -869,7 +871,7 @@ func (s *InboundService) addClientTraffic2(tx *gorm.DB, traffics []*xray.ClientT
 
 	return nil
 }
-func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTraffic) (err error) {
+func (s *InboundService) addClientTraffic(tx *gorm.DB, tx3 *gorm.DB, traffics []*xray.ClientTraffic) (err error) {
 
 	server, err := os.Hostname()
 	if err != nil {
@@ -928,7 +930,7 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTr
 
 	// Save new records in ClientTrafficDetails
 	if len(newDetailsRecords) > 0 {
-		if err := tx.Create(&newDetailsRecords).Error; err != nil {
+		if err := tx3.Create(&newDetailsRecords).Error; err != nil {
 			logger.Warning("AddClientTraffic insert details data ", err)
 			//return err
 		}

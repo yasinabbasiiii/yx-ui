@@ -20,6 +20,7 @@ import (
 
 var db *gorm.DB
 var db2 *gorm.DB
+var db3 *gorm.DB
 
 var initializers = []func() error{
 	initUser,
@@ -74,7 +75,7 @@ func initClientTraffic() error {
 
 // Samyar
 func initClientTrafficDetails() error {
-	return db2.AutoMigrate(&xray.ClientTrafficDetails{})
+	return db3.AutoMigrate(&xray.ClientTrafficDetails{})
 }
 func InitDB(dbPath string) error {
 	dir := path.Dir(dbPath)
@@ -106,6 +107,16 @@ func InitDB(dbPath string) error {
 			return err
 		}
 	}
+	// اتصال به MySQL
+	db3, err = gorm.Open(mysql.Open("yas:Yas2566*7425@tcp(db.ir107.ir:3306)/x_ui_2"), c)
+	if err != nil {
+		//logger.Error = "connect to db failed, trying to connect to db1"
+		db3, err = gorm.Open(mysql.Open("yas:Yas2566*7425@tcp(db1.ir107.ir:3306)/x_ui_2"), c)
+		if err != nil {
+			//logger.Error("connect to db1 failed!")
+			return err
+		}
+	}
 
 	// اتصال به SQLite
 	db2, err = gorm.Open(sqlite.Open(dbPath), c)
@@ -124,6 +135,11 @@ func InitDB(dbPath string) error {
 // اتصال به MySQL
 func GetDB() *gorm.DB {
 	return db
+}
+
+// اتصال به MySQL
+func GetDB3() *gorm.DB {
+	return db3
 }
 
 // اتصال به SQLite
