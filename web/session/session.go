@@ -44,7 +44,7 @@ func GetLoginUser(c *gin.Context) *model.User {
 }
 
 func IsLogin(c *gin.Context) bool {
-	logger.Debug(c)
+	logger.Debug(c.Request.Cookies())
 	//logger.Debug("333")
 	return GetLoginUser(c) != nil
 }
