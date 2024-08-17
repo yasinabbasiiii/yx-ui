@@ -813,65 +813,6 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 // 	return nil
 // }
 
-func (s *InboundService) addClientTraffic2(tx *gorm.DB, traffics []*xray.ClientTraffic) (err error) {
-	// if len(traffics) == 0 {
-	// 	// Empty onlineUsers
-	// 	if p != nil {
-	// 		p.SetOnlineClients(nil)
-	// 	}
-	// 	return nil
-	// }
-
-	//var onlineClients []string
-
-	emails := make([]string, len(traffics))
-	for i, traffic := range traffics {
-		emails[i] = traffic.Email
-	}
-	dbClientTraffics := make([]*xray.ClientTraffic, 0, len(traffics))
-	err = tx.Model(xray.ClientTraffic{}).Where("email IN (?)", emails).Find(&dbClientTraffics).Error
-	if err != nil {
-		return err
-	}
-
-	// Avoid empty slice error
-	if len(dbClientTraffics) == 0 {
-		return nil
-	}
-
-	dbClientTraffics, err = s.adjustTraffics(tx, dbClientTraffics)
-	if err != nil {
-		return err
-	}
-
-	for dbTraffic_index := range dbClientTraffics {
-		logger.Debug(dbClientTraffics[dbTraffic_index])
-		for traffic_index := range traffics {
-			//logger.Debug(traffics[traffic_index])
-			if dbClientTraffics[dbTraffic_index].Email == traffics[traffic_index].Email {
-				dbClientTraffics[dbTraffic_index].Up += traffics[traffic_index].Up
-				dbClientTraffics[dbTraffic_index].Down += traffics[traffic_index].Down
-				dbClientTraffics[dbTraffic_index].Last = time.Now().Unix() * 1000 //Samyar
-
-				// Add user in onlineUsers array on traffic
-				// if traffics[traffic_index].Up+traffics[traffic_index].Down > 0 {
-				// 	onlineClients = append(onlineClients, traffics[traffic_index].Email)
-				// }
-				// break
-			}
-		}
-	}
-
-	// Set onlineUsers
-	//p.SetOnlineClients(onlineClients)
-
-	err = tx.Save(dbClientTraffics).Error
-	if err != nil {
-		logger.Warning("AddClientTraffic update data ", err)
-	}
-
-	return nil
-}
 func (s *InboundService) addClientTraffic(tx *gorm.DB, tx3 *gorm.DB, traffics []*xray.ClientTraffic) (err error) {
 
 	server, err := os.Hostname()
@@ -931,7 +872,6 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, tx3 *gorm.DB, traffics []
 
 	// Save new records in ClientTrafficDetails
 	if len(newDetailsRecords) > 0 {
-
 		if err := tx3.Create(&newDetailsRecords).Error; err != nil {
 			logger.Warning("AddClientTraffic insert details data ", err)
 			//return err
