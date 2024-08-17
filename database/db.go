@@ -100,23 +100,23 @@ func InitDB(dbPath string) error {
 	db, err = gorm.Open(mysql.Open(dsn), c)
 	if err != nil {
 		//logger.Error = "connect to db failed, trying to connect to db1"
-		dsn := "yas:Yas2566*7425@tcp(db1.ir107.ir:3306)/x_ui"
-		db, err = gorm.Open(mysql.Open(dsn), c)
-		if err != nil {
-			//logger.Error("connect to db1 failed!")
-			return err
-		}
+		// dsn := "yas:Yas2566*7425@tcp(db1.ir107.ir:3306)/x_ui"
+		// db, err = gorm.Open(mysql.Open(dsn), c)
+		// if err != nil {
+		// 	//logger.Error("connect to db1 failed!")
+		// 	return err
+		// }
 	}
 	// اتصال به MySQL
-	db3, err = gorm.Open(mysql.Open("yas:Yas2566*7425@tcp(db.ir107.ir:3306)/x_ui_3"), c)
-	if err != nil {
-		//logger.Error = "connect to db failed, trying to connect to db1"
-		db3, err = gorm.Open(mysql.Open("yas:Yas2566*7425@tcp(db1.ir107.ir:3306)/x_ui_3"), c)
-		if err != nil {
-			//logger.Error("connect to db1 failed!")
-			return err
-		}
-	}
+	// db3, err = gorm.Open(mysql.Open("yas:Yas2566*7425@tcp(db.ir107.ir:3306)/x_ui_3"), c)
+	// if err != nil {
+	// 	//logger.Error = "connect to db failed, trying to connect to db1"
+	// 	db3, err = gorm.Open(mysql.Open("yas:Yas2566*7425@tcp(db1.ir107.ir:3306)/x_ui_3"), c)
+	// 	if err != nil {
+	// 		//logger.Error("connect to db1 failed!")
+	// 		return err
+	// 	}
+	// }
 
 	// اتصال به SQLite
 	db2, err = gorm.Open(sqlite.Open(dbPath), c)
