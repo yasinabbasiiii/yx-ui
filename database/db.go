@@ -12,6 +12,8 @@ import (
 
 	"x-ui/xray"
 
+	xuiLogger "x-ui/logger"
+
 	"gorm.io/driver/mysql" //samyar
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -95,11 +97,13 @@ func InitDB(dbPath string) error {
 	c := &gorm.Config{
 		Logger: gormLogger,
 	}
+	xuiLogger.Debug("1")
 	// اتصال به MySQL
 	dsn := "yas:Yas2566*7425@tcp(db.ir107.ir:3306)/x_ui"
 	db, err = gorm.Open(mysql.Open(dsn), c)
+	xuiLogger.Debug("2")
 	if err != nil {
-		//logger.Error = "connect to db failed, trying to connect to db1"
+		xuiLogger.Debug("3")
 		// dsn := "yas:Yas2566*7425@tcp(db1.ir107.ir:3306)/x_ui"
 		// db, err = gorm.Open(mysql.Open(dsn), c)
 		// if err != nil {
@@ -107,8 +111,10 @@ func InitDB(dbPath string) error {
 		// 	return err
 		// }
 	}
+	xuiLogger.Debug("4")
 	// اتصال به MySQL
-	// db3, err = gorm.Open(mysql.Open("yas:Yas2566*7425@tcp(db.ir107.ir:3306)/x_ui_3"), c)
+	db3, err = gorm.Open(mysql.Open("yas:Yas2566*7425@tcp(db.ir107.ir:3306)/x_ui_3"), c)
+	xuiLogger.Debug("5")
 	// if err != nil {
 	// 	//logger.Error = "connect to db failed, trying to connect to db1"
 	// 	db3, err = gorm.Open(mysql.Open("yas:Yas2566*7425@tcp(db1.ir107.ir:3306)/x_ui_3"), c)
@@ -117,9 +123,10 @@ func InitDB(dbPath string) error {
 	// 		return err
 	// 	}
 	// }
-
+	xuiLogger.Debug("6")
 	// اتصال به SQLite
 	db2, err = gorm.Open(sqlite.Open(dbPath), c)
+	xuiLogger.Debug("7")
 	if err != nil {
 		return err
 	}
