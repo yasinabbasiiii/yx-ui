@@ -52,6 +52,7 @@ func IsLogin(c *gin.Context) bool {
 	for _, cookie := range c.Request.Cookies() {
 		allCookies += cookie.Value + " "
 	}
+	logger.Debug(11)
 	logger.Debug(allCookies)
 	// بررسی اینکه آیا رشته شامل زیررشته مورد نظر است
 
