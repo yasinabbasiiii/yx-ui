@@ -139,6 +139,8 @@ func (s *SubJsonService) GetJson(subId string, host string) (string, string, err
 }
 
 func (s *SubJsonService) getConfig(inbound *model.Inbound, client model.Client, host string) []json_util.RawMessage {
+
+	logger.Debug("getConfig")
 	var newJsonArray []json_util.RawMessage
 	stream := s.streamData(inbound.StreamSettings)
 
@@ -277,6 +279,7 @@ func (s *SubJsonService) realityData(rData map[string]interface{}) map[string]in
 }
 
 func (s *SubJsonService) genVnext(inbound *model.Inbound, streamSettings json_util.RawMessage, client model.Client) json_util.RawMessage {
+	logger.Debug("genVnext")
 	outbound := Outbound{}
 	usersData := make([]UserVnext, 1)
 

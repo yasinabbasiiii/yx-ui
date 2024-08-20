@@ -91,6 +91,7 @@ func (x *XrayAPI) DelInbound(tag string) error {
 }
 
 func (x *XrayAPI) AddUser(Protocol string, inboundTag string, user map[string]interface{}) error {
+	logger.Debug("AddUser")
 	var account *serial.TypedMessage
 	switch Protocol {
 	case "vmess":

@@ -105,6 +105,7 @@ func (s *SubService) GetSubs(subId string, host string) ([]string, string, error
 }
 
 func (s *SubService) getInboundsBySubId(subId string) ([]*model.Inbound, error) {
+	logger.Debug("getInboundsBySubId")
 	db := database.GetDB()
 	var inbounds []*model.Inbound
 	err := db.Model(model.Inbound{}).Preload("ClientStats").Where(`id in (
