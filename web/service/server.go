@@ -415,22 +415,24 @@ func (s *ServerService) GetLogs(count string, level string, syslog string) []str
 }
 
 func (s *ServerService) GetConfigJson() (interface{}, error) {
-	config, err := s.xrayService.GetXrayConfig()
-	if err != nil {
-		return nil, err
-	}
-	contents, err := json.MarshalIndent(config, "", "  ")
-	if err != nil {
-		return nil, err
-	}
+	logger.Debug("GetConfigJson")
+	return nil, nil
+	// config, err := s.xrayService.GetXrayConfig()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// contents, err := json.MarshalIndent(config, "", "  ")
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	var jsonData interface{}
-	err = json.Unmarshal(contents, &jsonData)
-	if err != nil {
-		return nil, err
-	}
+	// var jsonData interface{}
+	// err = json.Unmarshal(contents, &jsonData)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	return jsonData, nil
+	// return jsonData, nil
 }
 
 func (s *ServerService) GetDb() ([]byte, error) {
