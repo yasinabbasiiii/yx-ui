@@ -122,7 +122,7 @@ func InitDB(dbPath string) error {
 		xuiLogger.Error("خطا در خواندن از دیتابیس:", err)
 
 	}
-	xuiLogger.Debug(fmt.Sprintf("ID: %d, Key: %s, Value: %s\n", setting.ID, setting.Key, setting.Value))
+	xuiLogger.Debug(fmt.Sprintf("ID: %d, Key: %s, Value: %s\n", setting.Id, setting.Key, setting.Value))
 
 	xuiLogger.Debug("5")
 	if err != nil {
