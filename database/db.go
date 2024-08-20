@@ -2,6 +2,7 @@ package database
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"io/fs"
 	"os"
@@ -104,7 +105,7 @@ func InitDB(dbPath string) error {
 	xuiLogger.Debug("2")
 	if err != nil {
 		xuiLogger.Debug("3")
-		xuiLogger.Debug(err)
+		xuiLogger.Error(err)
 		// dsn := "yas:Yas2566*7425@tcp(db1.ir107.ir:3306)/x_ui"
 		// db, err = gorm.Open(mysql.Open(dsn), c)
 		// if err != nil {
@@ -115,9 +116,17 @@ func InitDB(dbPath string) error {
 	xuiLogger.Debug("4")
 	// اتصال به MySQL
 	db3, err = gorm.Open(mysql.Open("yas:Yas2566*7425@tcp(db.ir107.ir:3306)/x_ui_3"), c)
+	// خواندن اولین رکورد از جدول settings
+	var setting model.Setting
+	if err := db3.First(&setting).Error; err != nil {
+		xuiLogger.Error("خطا در خواندن از دیتابیس:", err)
+
+	}
+	xuiLogger.Debug(fmt.Sprintf("ID: %d, Key: %s, Value: %s\n", setting.ID, setting.Key, setting.Value))
+
 	xuiLogger.Debug("5")
 	if err != nil {
-		xuiLogger.Debug(err)
+		xuiLogger.Error(err)
 		// 	//logger.Error = "connect to db failed, trying to connect to db1"
 		// 	db3, err = gorm.Open(mysql.Open("yas:Yas2566*7425@tcp(db1.ir107.ir:3306)/x_ui_3"), c)
 		// 	if err != nil {
