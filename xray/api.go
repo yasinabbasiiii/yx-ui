@@ -33,11 +33,15 @@ type XrayAPI struct {
 
 func (x *XrayAPI) Init(apiPort int) (err error) {
 	logger.Debug("Init")
+	logger.Debug(apiPort)
+
 	//logger.Error("3")
 	if apiPort == 0 {
 		return common.NewError("xray api port wrong:", apiPort)
 	}
 	conn, err := grpc.NewClient(fmt.Sprintf("127.0.0.1:%v", apiPort), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	logger.Debug(conn)
+
 	if err != nil {
 		return err
 	}
