@@ -162,6 +162,7 @@ func (x *XrayAPI) RemoveUser(inboundTag string, email string) error {
 }
 
 func (x *XrayAPI) GetTraffic(reset bool) ([]*Traffic, []*ClientTraffic, error) {
+	logger.Debug("GetTraffic")
 	if x.grpcClient == nil {
 		return nil, nil, common.NewError("xray api is not initialized")
 	}
