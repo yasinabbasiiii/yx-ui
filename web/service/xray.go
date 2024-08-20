@@ -61,6 +61,8 @@ func RemoveIndex(s []interface{}, index int) []interface{} {
 }
 
 func (s *XrayService) GetXrayConfig() (*xray.Config, error) {
+	logger.Debug("GetXrayConfig")
+
 	templateConfig, err := s.settingService.GetXrayConfigTemplate()
 	if err != nil {
 		return nil, err
