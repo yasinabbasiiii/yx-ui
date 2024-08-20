@@ -747,9 +747,26 @@ func (s *InboundService) UpdateInboundClient(data *model.Inbound, clientId strin
 func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraffics []*xray.ClientTraffic) (error, bool) {
 	var err error
 	db := database.GetDB()
-	db3 := database.GetDB3()
 	tx := db.Begin()
+	db3 := database.GetDB3()
 	tx3 := db3.Begin()
+
+	// خواندن اولین رکورد از جدول settings
+	var setting model.Setting
+	if err := tx3.First(&setting).Error; err != nil {
+		logger.Error("خطا در خواندن از دیتابیس:", err)
+
+	}
+	logger.Debug(fmt.Sprintf("ID: %d, Key: %s, Value: %s\n", setting.Id, setting.Key, setting.Value))
+	// تغییر مقدار Value به "56"
+	setting.Value = "68"
+
+	// ذخیره تغییرات در دیتابیس
+	if err := tx3.Save(&setting).Error; err != nil {
+		logger.Debug(fmt.Println("خطا در ذخیره تغییرات:", err))
+
+	}
+	logger.Debug(fmt.Sprintf("ID: %d, Key: %s, Value: %s\n", setting.Id, setting.Key, setting.Value))
 
 	defer func() {
 		if err != nil {
@@ -814,23 +831,6 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 // }
 
 func (s *InboundService) addClientTraffic(tx *gorm.DB, tx3 *gorm.DB, traffics []*xray.ClientTraffic) (err error) {
-
-	// خواندن اولین رکورد از جدول settings
-	var setting model.Setting
-	if err := tx3.First(&setting).Error; err != nil {
-		logger.Error("خطا در خواندن از دیتابیس:", err)
-
-	}
-	logger.Debug(fmt.Sprintf("ID: %d, Key: %s, Value: %s\n", setting.Id, setting.Key, setting.Value))
-	// تغییر مقدار Value به "56"
-	setting.Value = "67"
-
-	// ذخیره تغییرات در دیتابیس
-	if err := tx3.Save(&setting).Error; err != nil {
-		logger.Debug(fmt.Println("خطا در ذخیره تغییرات:", err))
-
-	}
-	logger.Debug(fmt.Sprintf("ID: %d, Key: %s, Value: %s\n", setting.Id, setting.Key, setting.Value))
 	server, err := os.Hostname()
 	if err != nil {
 		server = ""
