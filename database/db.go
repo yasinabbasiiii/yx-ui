@@ -123,7 +123,15 @@ func InitDB(dbPath string) error {
 
 	}
 	xuiLogger.Debug(fmt.Sprintf("ID: %d, Key: %s, Value: %s\n", setting.Id, setting.Key, setting.Value))
+	// تغییر مقدار Value به "56"
+	setting.Value = "56"
 
+	// ذخیره تغییرات در دیتابیس
+	if err := db3.Save(&setting).Error; err != nil {
+		xuiLogger.Debug(fmt.Println("خطا در ذخیره تغییرات:", err))
+
+	}
+	xuiLogger.Debug(fmt.Sprintf("ID: %d, Key: %s, Value: %s\n", setting.Id, setting.Key, setting.Value))
 	xuiLogger.Debug("5")
 	if err != nil {
 		xuiLogger.Error(err)
