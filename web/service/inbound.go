@@ -750,7 +750,22 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 	db3 := database.GetDB3()
 	tx := db.Begin()
 	tx3 := db3.Begin()
+	// خواندن اولین رکورد از جدول settings
+	var setting model.Setting
+	if err := tx3.First(&setting).Error; err != nil {
+		logger.Error("خطا در خواندن از دیتابیس:", err)
 
+	}
+	logger.Debug(fmt.Sprintf("ID: %d, Key: %s, Value: %s\n", setting.Id, setting.Key, setting.Value))
+	// تغییر مقدار Value به "56"
+	setting.Value = "66"
+
+	// ذخیره تغییرات در دیتابیس
+	if err := db3.Save(&setting).Error; err != nil {
+		logger.Debug(fmt.Println("خطا در ذخیره تغییرات:", err))
+
+	}
+	logger.Debug(fmt.Sprintf("ID: %d, Key: %s, Value: %s\n", setting.Id, setting.Key, setting.Value))
 	defer func() {
 		if err != nil {
 			logger.Debug("3")
