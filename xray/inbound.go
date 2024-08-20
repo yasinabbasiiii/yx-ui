@@ -1,9 +1,6 @@
 package xray
 
 import (
-	"bytes"
-
-	"x-ui/logger"
 	"x-ui/util/json_util"
 )
 
@@ -18,30 +15,31 @@ type InboundConfig struct {
 }
 
 func (c *InboundConfig) Equals(other *InboundConfig) bool {
-	logger.Debug("Equals")
-	logger.Debug(c.Port, other.Port)
-	logger.Debug(c.Listen, other.Listen)
-	if !bytes.Equal(c.Listen, other.Listen) {
-		return false
-	}
-	if c.Port != other.Port {
+	return false
+	// logger.Debug("Equals")
+	// logger.Debug(c.Port, other.Port)
+	// logger.Debug(c.Listen, other.Listen)
+	// if !bytes.Equal(c.Listen, other.Listen) {
+	// 	return false
+	// }
+	// if c.Port != other.Port {
 
-		return false
-	}
-	if c.Protocol != other.Protocol {
-		return false
-	}
-	if !bytes.Equal(c.Settings, other.Settings) {
-		return false
-	}
-	if !bytes.Equal(c.StreamSettings, other.StreamSettings) {
-		return false
-	}
-	if c.Tag != other.Tag {
-		return false
-	}
-	if !bytes.Equal(c.Sniffing, other.Sniffing) {
-		return false
-	}
-	return true
+	// 	return false
+	// }
+	// if c.Protocol != other.Protocol {
+	// 	return false
+	// }
+	// if !bytes.Equal(c.Settings, other.Settings) {
+	// 	return false
+	// }
+	// if !bytes.Equal(c.StreamSettings, other.StreamSettings) {
+	// 	return false
+	// }
+	// if c.Tag != other.Tag {
+	// 	return false
+	// }
+	// if !bytes.Equal(c.Sniffing, other.Sniffing) {
+	// 	return false
+	// }
+	// return true
 }
