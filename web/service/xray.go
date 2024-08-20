@@ -65,12 +65,14 @@ func (s *XrayService) GetXrayConfig() (*xray.Config, error) {
 
 	templateConfig, err := s.settingService.GetXrayConfigTemplate()
 	if err != nil {
+		logger.Debug("21")
 		return nil, err
 	}
 
 	xrayConfig := &xray.Config{}
 	err = json.Unmarshal([]byte(templateConfig), xrayConfig)
 	if err != nil {
+		logger.Debug("22")
 		return nil, err
 	}
 
@@ -78,6 +80,7 @@ func (s *XrayService) GetXrayConfig() (*xray.Config, error) {
 
 	inbounds, err := s.inboundService.GetAllInbounds()
 	if err != nil {
+		logger.Debug("23")
 		return nil, err
 	}
 	for _, inbound := range inbounds {
@@ -128,6 +131,7 @@ func (s *XrayService) GetXrayConfig() (*xray.Config, error) {
 			settings["clients"] = final_clients
 			modifiedSettings, err := json.MarshalIndent(settings, "", "  ")
 			if err != nil {
+				logger.Debug("24")
 				return nil, err
 			}
 
@@ -154,6 +158,7 @@ func (s *XrayService) GetXrayConfig() (*xray.Config, error) {
 
 			newStream, err := json.MarshalIndent(stream, "", "  ")
 			if err != nil {
+				logger.Debug("24")
 				return nil, err
 			}
 			inbound.StreamSettings = string(newStream)
@@ -162,6 +167,7 @@ func (s *XrayService) GetXrayConfig() (*xray.Config, error) {
 		inboundConfig := inbound.GenXrayInboundConfig()
 		xrayConfig.InboundConfigs = append(xrayConfig.InboundConfigs, *inboundConfig)
 	}
+
 	return xrayConfig, nil
 }
 
