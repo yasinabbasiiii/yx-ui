@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"time"
 
+	"x-ui/logger"
 	"x-ui/web/global"
 	"x-ui/web/service"
 
@@ -126,6 +127,7 @@ func (a *ServerController) getLogs(c *gin.Context) {
 }
 
 func (a *ServerController) getConfigJson(c *gin.Context) {
+	logger.Debug("getConfigJson")
 	configJson, err := a.serverService.GetConfigJson()
 	if err != nil {
 		jsonMsg(c, "get config.json", err)
