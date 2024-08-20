@@ -58,6 +58,7 @@ func GetAccessPersistentPrevLogPath() string {
 }
 
 func GetAccessLogPath() (string, error) {
+	logger.Debug("GetAccessLogPath")
 	config, err := os.ReadFile(GetConfigPath())
 	if err != nil {
 		logger.Warningf("Something went wrong: %s", err)
