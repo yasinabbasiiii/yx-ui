@@ -13,6 +13,7 @@ func NewAutoHttpsListener(listener net.Listener) net.Listener {
 }
 
 func (l *AutoHttpsListener) Accept() (net.Conn, error) {
+
 	conn, err := l.Listener.Accept()
 	if err != nil {
 		return nil, err
