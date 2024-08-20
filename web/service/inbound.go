@@ -774,6 +774,7 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 			tx.Rollback()
 		} else {
 			tx.Commit()
+			tx3.Commit()
 		}
 	}()
 	// err = s.addInboundTraffic(tx, inboundTraffics)
