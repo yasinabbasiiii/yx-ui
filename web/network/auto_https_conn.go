@@ -7,6 +7,7 @@ import (
 	"net"
 	"net/http"
 	"sync"
+	"x-ui/logger"
 )
 
 type AutoHttpsConn struct {
@@ -19,12 +20,14 @@ type AutoHttpsConn struct {
 }
 
 func NewAutoHttpsConn(conn net.Conn) net.Conn {
+	logger.Debug("NewAutoHttpsConn")
 	return &AutoHttpsConn{
 		Conn: conn,
 	}
 }
 
 func (c *AutoHttpsConn) readRequest() bool {
+	logger.Debug("readRequest")
 	c.firstBuf = make([]byte, 2048)
 	n, err := c.Conn.Read(c.firstBuf)
 	c.firstBuf = c.firstBuf[:n]
@@ -50,6 +53,7 @@ func (c *AutoHttpsConn) readRequest() bool {
 }
 
 func (c *AutoHttpsConn) Read(buf []byte) (int, error) {
+	logger.Debug("Read")
 	c.readRequestOnce.Do(func() {
 		c.readRequest()
 	})

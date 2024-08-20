@@ -22,6 +22,8 @@ type InboundService struct {
 }
 
 func (s *InboundService) GetInbounds(userId int) ([]*model.Inbound, error) {
+	logger.Debug("GetInbounds")
+
 	db := database.GetDB()
 	var inbounds []*model.Inbound
 	err := db.Model(model.Inbound{}).Preload("ClientStats").Where("user_id = ?", userId).Find(&inbounds).Error
@@ -32,6 +34,7 @@ func (s *InboundService) GetInbounds(userId int) ([]*model.Inbound, error) {
 }
 
 func (s *InboundService) GetAllInbounds() ([]*model.Inbound, error) {
+	logger.Debug("GetAllInbounds")
 	db := database.GetDB()
 	var inbounds []*model.Inbound
 	err := db.Model(model.Inbound{}).Preload("ClientStats").Find(&inbounds).Error
@@ -42,6 +45,7 @@ func (s *InboundService) GetAllInbounds() ([]*model.Inbound, error) {
 }
 
 func (s *InboundService) checkPortExist(listen string, port int, ignoreId int) (bool, error) {
+	logger.Debug("checkPortExist")
 	db := database.GetDB()
 	if listen == "" || listen == "0.0.0.0" || listen == "::" || listen == "::0" {
 		db = db.Model(model.Inbound{}).Where("port = ?", port)
