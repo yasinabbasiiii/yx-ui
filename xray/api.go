@@ -4,8 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"regexp"
-	"time"
 
 	"x-ui/logger"
 	"x-ui/util/common"
@@ -162,83 +160,84 @@ func (x *XrayAPI) RemoveUser(inboundTag string, email string) error {
 }
 
 func (x *XrayAPI) GetTraffic(reset bool) ([]*Traffic, []*ClientTraffic, error) {
-	logger.Debug("GetTraffic")
-	if x.grpcClient == nil {
-		return nil, nil, common.NewError("xray api is not initialized")
-	}
-	trafficRegex := regexp.MustCompile("(inbound|outbound)>>>([^>]+)>>>traffic>>>(downlink|uplink)")
-	ClientTrafficRegex := regexp.MustCompile("(user)>>>([^>]+)>>>traffic>>>(downlink|uplink)")
+	return nil, nil, nil
+	// logger.Debug("GetTraffic")
+	// if x.grpcClient == nil {
+	// 	return nil, nil, common.NewError("xray api is not initialized")
+	// }
+	// trafficRegex := regexp.MustCompile("(inbound|outbound)>>>([^>]+)>>>traffic>>>(downlink|uplink)")
+	// ClientTrafficRegex := regexp.MustCompile("(user)>>>([^>]+)>>>traffic>>>(downlink|uplink)")
 
-	client := *x.StatsServiceClient
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
-	defer cancel()
-	request := &statsService.QueryStatsRequest{
-		Reset_: reset,
-	}
-	resp, err := client.QueryStats(ctx, request)
-	if err != nil {
-		return nil, nil, err
-	}
-	tagTrafficMap := map[string]*Traffic{}
-	emailTrafficMap := map[string]*ClientTraffic{}
+	// client := *x.StatsServiceClient
+	// ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	// defer cancel()
+	// request := &statsService.QueryStatsRequest{
+	// 	Reset_: reset,
+	// }
+	// resp, err := client.QueryStats(ctx, request)
+	// if err != nil {
+	// 	return nil, nil, err
+	// }
+	// tagTrafficMap := map[string]*Traffic{}
+	// emailTrafficMap := map[string]*ClientTraffic{}
 
-	clientTraffics := make([]*ClientTraffic, 0)
-	traffics := make([]*Traffic, 0)
-	for _, stat := range resp.GetStat() {
-		matchs := trafficRegex.FindStringSubmatch(stat.Name)
-		if len(matchs) < 3 {
+	// clientTraffics := make([]*ClientTraffic, 0)
+	// traffics := make([]*Traffic, 0)
+	// for _, stat := range resp.GetStat() {
+	// 	matchs := trafficRegex.FindStringSubmatch(stat.Name)
+	// 	if len(matchs) < 3 {
 
-			matchs := ClientTrafficRegex.FindStringSubmatch(stat.Name)
-			if len(matchs) < 3 {
-				continue
-			} else {
+	// 		matchs := ClientTrafficRegex.FindStringSubmatch(stat.Name)
+	// 		if len(matchs) < 3 {
+	// 			continue
+	// 		} else {
 
-				isUser := matchs[1] == "user"
-				email := matchs[2]
-				isDown := matchs[3] == "downlink"
-				if !isUser {
-					continue
-				}
-				traffic, ok := emailTrafficMap[email]
-				if !ok {
-					traffic = &ClientTraffic{
-						Email: email,
-					}
-					emailTrafficMap[email] = traffic
-					clientTraffics = append(clientTraffics, traffic)
-				}
-				if isDown {
-					traffic.Down = stat.Value
-				} else {
-					traffic.Up = stat.Value
-				}
+	// 			isUser := matchs[1] == "user"
+	// 			email := matchs[2]
+	// 			isDown := matchs[3] == "downlink"
+	// 			if !isUser {
+	// 				continue
+	// 			}
+	// 			traffic, ok := emailTrafficMap[email]
+	// 			if !ok {
+	// 				traffic = &ClientTraffic{
+	// 					Email: email,
+	// 				}
+	// 				emailTrafficMap[email] = traffic
+	// 				clientTraffics = append(clientTraffics, traffic)
+	// 			}
+	// 			if isDown {
+	// 				traffic.Down = stat.Value
+	// 			} else {
+	// 				traffic.Up = stat.Value
+	// 			}
 
-			}
-			continue
-		}
-		isInbound := matchs[1] == "inbound"
-		isOutbound := matchs[1] == "outbound"
-		tag := matchs[2]
-		isDown := matchs[3] == "downlink"
-		if tag == "api" {
-			continue
-		}
-		traffic, ok := tagTrafficMap[tag]
-		if !ok {
-			traffic = &Traffic{
-				IsInbound:  isInbound,
-				IsOutbound: isOutbound,
-				Tag:        tag,
-			}
-			tagTrafficMap[tag] = traffic
-			traffics = append(traffics, traffic)
-		}
-		if isDown {
-			traffic.Down = stat.Value
-		} else {
-			traffic.Up = stat.Value
-		}
-	}
+	// 		}
+	// 		continue
+	// 	}
+	// 	isInbound := matchs[1] == "inbound"
+	// 	isOutbound := matchs[1] == "outbound"
+	// 	tag := matchs[2]
+	// 	isDown := matchs[3] == "downlink"
+	// 	if tag == "api" {
+	// 		continue
+	// 	}
+	// 	traffic, ok := tagTrafficMap[tag]
+	// 	if !ok {
+	// 		traffic = &Traffic{
+	// 			IsInbound:  isInbound,
+	// 			IsOutbound: isOutbound,
+	// 			Tag:        tag,
+	// 		}
+	// 		tagTrafficMap[tag] = traffic
+	// 		traffics = append(traffics, traffic)
+	// 	}
+	// 	if isDown {
+	// 		traffic.Down = stat.Value
+	// 	} else {
+	// 		traffic.Up = stat.Value
+	// 	}
+	// }
 
-	return traffics, clientTraffics, nil
+	// return traffics, clientTraffics, nil
 }
