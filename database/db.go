@@ -2,7 +2,6 @@ package database
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"io/fs"
 	"os"
@@ -116,22 +115,6 @@ func InitDB(dbPath string) error {
 	xuiLogger.Debug("4")
 	// اتصال به MySQL
 	db3, err = gorm.Open(mysql.Open("yas:Yas2566*7425@tcp(db.ir107.ir:3306)/x_ui_3"), c)
-	// خواندن اولین رکورد از جدول settings
-	var setting model.Setting
-	if err := db3.First(&setting).Error; err != nil {
-		xuiLogger.Error("خطا در خواندن از دیتابیس:", err)
-
-	}
-	xuiLogger.Debug(fmt.Sprintf("ID: %d, Key: %s, Value: %s\n", setting.Id, setting.Key, setting.Value))
-	// تغییر مقدار Value به "56"
-	setting.Value = "56"
-
-	// ذخیره تغییرات در دیتابیس
-	if err := db3.Save(&setting).Error; err != nil {
-		xuiLogger.Debug(fmt.Println("خطا در ذخیره تغییرات:", err))
-
-	}
-	xuiLogger.Debug(fmt.Sprintf("ID: %d, Key: %s, Value: %s\n", setting.Id, setting.Key, setting.Value))
 	xuiLogger.Debug("5")
 	if err != nil {
 		xuiLogger.Error(err)
