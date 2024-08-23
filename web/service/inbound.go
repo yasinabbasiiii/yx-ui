@@ -11,6 +11,7 @@ import (
 	"x-ui/database"
 	"x-ui/database/model"
 	"x-ui/logger"
+	"x-ui/my"
 	"x-ui/util/common"
 	"x-ui/xray"
 
@@ -761,6 +762,9 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 			tx.Rollback()
 			tx3.Rollback()
 			logger.Error("Rollback")
+			message := "خطا در دیتابیس"
+			my.SendMessage("", "", message)
+
 		} else {
 			tx.Commit()
 			tx3.Commit()

@@ -32,16 +32,11 @@ type XrayAPI struct {
 }
 
 func (x *XrayAPI) Init(apiPort int) (err error) {
-	logger.Debug("Init")
-	logger.Debug(apiPort)
-
 	//logger.Error("3")
 	if apiPort == 0 {
 		return common.NewError("xray api port wrong:", apiPort)
 	}
 	conn, err := grpc.NewClient(fmt.Sprintf("127.0.0.1:%v", apiPort), grpc.WithTransportCredentials(insecure.NewCredentials()))
-	logger.Debug(conn)
-
 	if err != nil {
 		return err
 	}
@@ -58,7 +53,6 @@ func (x *XrayAPI) Init(apiPort int) (err error) {
 }
 
 func (x *XrayAPI) Close() {
-	logger.Debug("Close")
 	if x.grpcClient != nil {
 		x.grpcClient.Close()
 	}
@@ -97,7 +91,6 @@ func (x *XrayAPI) DelInbound(tag string) error {
 }
 
 func (x *XrayAPI) AddUser(Protocol string, inboundTag string, user map[string]interface{}) error {
-	logger.Debug("AddUser")
 	var account *serial.TypedMessage
 	switch Protocol {
 	case "vmess":
@@ -169,8 +162,6 @@ func (x *XrayAPI) RemoveUser(inboundTag string, email string) error {
 }
 
 func (x *XrayAPI) GetTraffic(reset bool) ([]*Traffic, []*ClientTraffic, error) {
-
-	logger.Debug("GetTraffic")
 	if x.grpcClient == nil {
 		return nil, nil, common.NewError("xray api is not initialized")
 	}
