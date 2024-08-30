@@ -35,7 +35,7 @@ func (s *InboundService) GetInbounds(userId int) ([]*model.Inbound, error) {
 }
 
 func (s *InboundService) GetAllInbounds() ([]*model.Inbound, error) {
-	logger.Debug("GetAllInbounds")
+	//logger.Debug("GetAllInbounds")
 	db := database.GetDB()
 	var inbounds []*model.Inbound
 	err := db.Model(model.Inbound{}).Preload("ClientStats").Find(&inbounds).Error
@@ -751,6 +751,7 @@ func (s *InboundService) UpdateInboundClient(data *model.Inbound, clientId strin
 
 func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraffics []*xray.ClientTraffic) (error, bool) {
 	var err error
+	hostname, _ := os.Hostname()
 	db := database.GetDB()
 	tx := db.Begin()
 	db3 := database.GetDB3()
@@ -762,7 +763,7 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 			tx.Rollback()
 			tx3.Rollback()
 			logger.Error("Rollback")
-			message := "خطا در دیتابیس"
+			message := "خطا در دیتابیس " + hostname
 			my.SendMessage("", "", message)
 
 		} else {

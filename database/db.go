@@ -9,7 +9,7 @@ import (
 
 	"x-ui/config"
 	"x-ui/database/model"
-
+	"x-ui/my"
 	"x-ui/xray"
 
 	xuiLogger "x-ui/logger"
@@ -105,6 +105,9 @@ func InitDB(dbPath string) error {
 	if err != nil {
 		xuiLogger.Debug("3")
 		xuiLogger.Error(err)
+		hostname, _ := os.Hostname()
+		message := "خطا در دیتابیس " + hostname
+		my.SendMessage("", "", message)
 		// dsn := "yas:Yas2566*7425@tcp(db1.ir107.ir:3306)/x_ui"
 		// db, err = gorm.Open(mysql.Open(dsn), c)
 		// if err != nil {
