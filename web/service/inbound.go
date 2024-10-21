@@ -694,6 +694,7 @@ func (s *InboundService) UpdateInboundClient(data *model.Inbound, clientId strin
 		// Reset the bot and sms fields //Samyar
 		clients[0].Bot = false
 		clients[0].Sms = false
+		clients[0].Reset = 2
 
 		if len(oldEmail) > 0 {
 			err = s.UpdateClientStat(tx, oldEmail, &clients[0])
