@@ -693,7 +693,7 @@ func (s *InboundService) UpdateInboundClient(data *model.Inbound, clientId strin
 	if len(clients[0].Email) > 0 {
 		// Reset the bot and sms fields //Samyar
 		clients[0].Bot = false
-		clients[0].Sms = false
+		clients[0].Sms = true
 		clients[0].Reset = 2
 
 		if len(oldEmail) > 0 {
