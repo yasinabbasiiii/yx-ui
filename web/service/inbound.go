@@ -23,7 +23,7 @@ type InboundService struct {
 }
 
 func (s *InboundService) GetInbounds(userId int) ([]*model.Inbound, error) {
-	logger.Debug("GetInbounds")
+	//logger.Debug("GetInbounds")
 
 	db := database.GetDB()
 	var inbounds []*model.Inbound
@@ -46,7 +46,7 @@ func (s *InboundService) GetAllInbounds() ([]*model.Inbound, error) {
 }
 
 func (s *InboundService) checkPortExist(listen string, port int, ignoreId int) (bool, error) {
-	logger.Debug("checkPortExist")
+	//logger.Debug("checkPortExist")
 	db := database.GetDB()
 	if listen == "" || listen == "0.0.0.0" || listen == "::" || listen == "::0" {
 		db = db.Model(model.Inbound{}).Where("port = ?", port)
@@ -603,6 +603,7 @@ func (s *InboundService) UpdateInboundClient(data *model.Inbound, clientId strin
 	//logger.Error("1UpdateInboundClient")
 	//logger.Error(data)
 	clients, err := s.GetClients(data)
+
 	//logger.Error(clients)
 	if err != nil {
 		return false, err
@@ -690,6 +691,10 @@ func (s *InboundService) UpdateInboundClient(data *model.Inbound, clientId strin
 	}()
 
 	if len(clients[0].Email) > 0 {
+		// Reset the bot and sms fields //Samyar
+		clients[0].Bot = false
+		clients[0].Sms = false
+
 		if len(oldEmail) > 0 {
 			err = s.UpdateClientStat(tx, oldEmail, &clients[0])
 			if err != nil {

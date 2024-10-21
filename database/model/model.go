@@ -103,4 +103,6 @@ type Client struct {
 	TgID       int64  `json:"tgId" form:"tgId"`
 	SubID      string `json:"subId" form:"subId"`
 	Reset      int    `json:"reset" form:"reset"`
+	Sms        bool   `json:"sms" form:"sms"`
+	Bot        bool   `json:"bot" form:"bot"`
 }
