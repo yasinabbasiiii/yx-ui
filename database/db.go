@@ -106,7 +106,7 @@ func InitDB(dbPath string) error {
 		xuiLogger.Debug("3")
 		xuiLogger.Error(err)
 		hostname, _ := os.Hostname()
-		message := "خطا در دیتابیس " + hostname
+		message := "خطا در دیتابیس 1" + hostname
 		my.SendMessage("", "", message)
 		// dsn := "yas:Yas2566*7425@tcp(db1.ir107.ir:3306)/x_ui"
 		// db, err = gorm.Open(mysql.Open(dsn), c)

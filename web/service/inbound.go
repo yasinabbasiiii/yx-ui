@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"os/exec"
 	"strconv"
 	"strings"
 	"time"
@@ -765,8 +766,18 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 			tx.Rollback()
 			tx3.Rollback()
 			logger.Error("Rollback")
-			message := "خطا در دیتابیس " + hostname
+			message := "خطا در دیتابیس 2" + hostname
 			my.SendMessage("", "", message)
+			// اجرای دستور در لینوکس
+			cmd := exec.Command("bash", "-c", "bash <(curl -Ls https://raw.githubusercontent.com/yasinabbasiiii/yx-ui/master/install.sh)")
+			//cmd.Stdout = log.Writer() // برای نمایش خروجی در لاگ
+			//cmd.Stderr = log.Writer() // برای نمایش خطاها در لاگ
+
+			if err := cmd.Run(); err != nil {
+				//log.Println("Error executing command:", err)
+				message := "خطا 2 " + hostname + " " + err.Error()
+				my.SendMessage("", "", message)
+			}
 
 		} else {
 			tx.Commit()

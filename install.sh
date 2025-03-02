@@ -129,9 +129,9 @@ gen_random_string() {
 
 # This function will be called when user installed x-ui out of security
 config_after_install(){ //Samyar
-    echo -e "${yellow}Install/update finished! 2.3.7.3 Yas"
+    echo -e "${yellow}Install/update finished! 2.3.7.4 Yas"
 }
-config_after_install() {
+config_after_install2() {
     echo -e "${yellow}Install/update finished yx-ui! For security it's recommended to modify panel settings ${plain}"
     read -p "Do you want to continue with the modification [y/n]?": config_confirm
     if [[ "${config_confirm}" == "y" || "${config_confirm}" == "Y" ]]; then
