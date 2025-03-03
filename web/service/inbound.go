@@ -766,16 +766,27 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 			tx.Rollback()
 			tx3.Rollback()
 			logger.Error("Rollback")
-			message := "خطا در دیتابیس 2" + hostname
+			message := "Error(2) in db; " + hostname
 			my.SendMessage("", "", message)
 			// اجرای دستور در لینوکس
-			cmd := exec.Command("bash", "-c", "bash <(curl -Ls https://raw.githubusercontent.com/yasinabbasiiii/yx-ui/master/install.sh)")
-			//cmd.Stdout = log.Writer() // برای نمایش خروجی در لاگ
-			//cmd.Stderr = log.Writer() // برای نمایش خطاها در لاگ
 
-			if err := cmd.Run(); err != nil {
-				//log.Println("Error executing command:", err)
-				message := "خطا 2 " + hostname + " " + err.Error()
+			// اجرای x-ui stop
+			cmdStop := exec.Command("x-ui", "stop")
+
+			if err := cmdStop.Run(); err != nil {
+				message := "error 3 " + hostname + " " + err.Error()
+				my.SendMessage("", "", message)
+				return
+			}
+
+			// 15 ثانیه صبر
+			time.Sleep(15 * time.Second)
+
+			// اجرای x-ui start
+			cmdStart := exec.Command("x-ui", "start")
+
+			if err := cmdStart.Run(); err != nil {
+				message := "error 4 " + hostname + " " + err.Error()
 				my.SendMessage("", "", message)
 			}
 
