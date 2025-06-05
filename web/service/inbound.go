@@ -850,7 +850,7 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 // 	return nil
 // }
 
-func (s *InboundService) addClientTraffic(tx *gorm.DB, tx3 *gorm.DB, traffics []*xray.ClientTraffic) (err error) {
+func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTraffic) (err error) {
 	server, err := os.Hostname()
 	if err != nil {
 		server = ""
@@ -879,27 +879,27 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, tx3 *gorm.DB, traffics []
 	}
 
 	// Prepare new records for ClientTrafficDetails
-	var newDetailsRecords []*xray.ClientTrafficDetails
-	for _, dbTraffic := range dbClientTraffics {
-		if incomingTraffic, found := emailTrafficMap[dbTraffic.Email]; found {
-			dbTraffic.Up += incomingTraffic.Up
-			dbTraffic.Down += incomingTraffic.Down
-			dbTraffic.Last = time.Now().Unix() * 1000 // Update the last activity timestamp
-			if incomingTraffic.Up+incomingTraffic.Down > 0 {
-				// Create a new record for ClientTrafficDetails
-				newDetail := &xray.ClientTrafficDetails{
-					Email:  dbTraffic.Email,
-					Up:     incomingTraffic.Up,
-					Down:   incomingTraffic.Down,
-					Total:  incomingTraffic.Up + incomingTraffic.Down,
-					Enable: dbTraffic.Enable,
-					Server: server,
-					Last:   time.Now().Unix() * 1000, // Update the last activity timestamp
-				}
-				newDetailsRecords = append(newDetailsRecords, newDetail)
-			}
-		}
-	}
+	// var newDetailsRecords []*xray.ClientTrafficDetails
+	// for _, dbTraffic := range dbClientTraffics {
+	// 	if incomingTraffic, found := emailTrafficMap[dbTraffic.Email]; found {
+	// 		dbTraffic.Up += incomingTraffic.Up
+	// 		dbTraffic.Down += incomingTraffic.Down
+	// 		dbTraffic.Last = time.Now().Unix() * 1000 // Update the last activity timestamp
+	// 		if incomingTraffic.Up+incomingTraffic.Down > 0 {
+	// 			// Create a new record for ClientTrafficDetails
+	// 			newDetail := &xray.ClientTrafficDetails{
+	// 				Email:  dbTraffic.Email,
+	// 				Up:     incomingTraffic.Up,
+	// 				Down:   incomingTraffic.Down,
+	// 				Total:  incomingTraffic.Up + incomingTraffic.Down,
+	// 				Enable: dbTraffic.Enable,
+	// 				Server: server,
+	// 				Last:   time.Now().Unix() * 1000, // Update the last activity timestamp
+	// 			}
+	// 			newDetailsRecords = append(newDetailsRecords, newDetail)
+	// 		}
+	// 	}
+	// }
 
 	if err := tx.Save(&dbClientTraffics).Error; err != nil {
 		logger.Warning("AddClientTraffic update data ", err)
@@ -907,16 +907,16 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, tx3 *gorm.DB, traffics []
 	}
 
 	// Save new records in ClientTrafficDetails
-	if len(newDetailsRecords) > 0 {
-		if err := tx3.Create(&newDetailsRecords).Error; err != nil {
-			logger.Warning("AddClientTraffic insert details data ", err)
-			//return err
-		}
-		if err := tx3.Save(&newDetailsRecords).Error; err != nil {
-			logger.Warning("save data ", err)
-			//return err
-		}
-	}
+	// if len(newDetailsRecords) > 0 {
+	// 	if err := tx3.Create(&newDetailsRecords).Error; err != nil {
+	// 		logger.Warning("AddClientTraffic insert details data ", err)
+	// 		//return err
+	// 	}
+	// 	if err := tx3.Save(&newDetailsRecords).Error; err != nil {
+	// 		logger.Warning("save data ", err)
+	// 		//return err
+	// 	}
+	// }
 	return nil
 }
 
