@@ -851,10 +851,10 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 // }
 
 func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTraffic) (err error) {
-	server, err := os.Hostname()
-	if err != nil {
-		server = ""
-	}
+	// server, err := os.Hostname()
+	// if err != nil {
+	// 	server = ""
+	// }
 	emails := make([]string, len(traffics))
 	emailTrafficMap := make(map[string]*xray.ClientTraffic, len(traffics))
 
