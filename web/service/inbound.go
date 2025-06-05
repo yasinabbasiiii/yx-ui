@@ -757,14 +757,14 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 	hostname, _ := os.Hostname()
 	db := database.GetDB()
 	tx := db.Begin()
-	db3 := database.GetDB3()
-	tx3 := db3.Begin()
+	// db3 := database.GetDB3()
+	// tx3 := db3.Begin()
 
 	defer func() {
 		if err != nil {
 
 			tx.Rollback()
-			tx3.Rollback()
+			// tx3.Rollback()
 			logger.Error("Rollback")
 			message := "Error(2) in db; " + hostname
 			my.SendMessage("", "", message)
@@ -792,7 +792,7 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 
 		} else {
 			tx.Commit()
-			tx3.Commit()
+			// tx3.Commit()
 			logger.Debug("Commit")
 		}
 	}()
@@ -800,10 +800,10 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 	// if err != nil {
 	// 	return err, false
 	// }
-	err = s.addClientTraffic(tx, tx3, clientTraffics)
-	if err != nil {
-		return err, false
-	}
+	// err = s.addClientTraffic(tx, tx3, clientTraffics)
+	// if err != nil {
+	// 	return err, false
+	// }
 
 	needRestart0, count, err := s.autoRenewClients(tx)
 	if err != nil {
