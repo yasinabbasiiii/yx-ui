@@ -918,7 +918,7 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, tx3 *gorm.DB, traffics []
 			//return err
 		}
 	} else {
-		logger.Warning("tx3 2")
+		logger.Warning(fmt.Sprintf("tx3 2 %d", len(newDetailsRecords)))
 	}
 	return nil
 }
