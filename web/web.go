@@ -259,7 +259,7 @@ func (s *Server) startTask() {
 		time.Sleep(time.Second * 5)
 		source := rand.NewSource(time.Now().UnixNano())
 		r := rand.New(source)
-		randomNum := r.Intn(201) + 800 // تولید عدد تصادفی بین 800 تا 1000
+		randomNum := r.Intn(101) + 500 // تولید عدد تصادفی بین 800 تا 1000
 		logger.Error("@every " + strconv.Itoa(randomNum) + "s")
 		// Statistics every 10 seconds, start the delay for 5 seconds for the first time, and staggered with the time to restart xray
 		s.cron.AddJob("@every "+strconv.Itoa(randomNum)+"s", job.NewXrayTrafficJob()) //samyar
