@@ -908,6 +908,7 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, tx3 *gorm.DB, traffics []
 
 	// Save new records in ClientTrafficDetails
 	if len(newDetailsRecords) > 1000000 {
+		logger.Warning("tx3 1")
 		if err := tx3.Create(&newDetailsRecords).Error; err != nil {
 			logger.Warning("AddClientTraffic insert details data ", err)
 			//return err
@@ -916,6 +917,8 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, tx3 *gorm.DB, traffics []
 			logger.Warning("save data ", err)
 			//return err
 		}
+	} else {
+		logger.Warning("tx3 2")
 	}
 	return nil
 }
