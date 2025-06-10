@@ -757,14 +757,14 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 	hostname, _ := os.Hostname()
 	db := database.GetDB()
 	tx := db.Begin()
-	db3 := database.GetDB3()
-	tx3 := db3.Begin()
+	//db3 := database.GetDB3()
+	//tx3 := db3.Begin()
 
 	defer func() {
 		if err != nil {
 
 			tx.Rollback()
-			tx3.Rollback()
+			//tx3.Rollback()
 			logger.Error("Rollback")
 			message := "Error(2) in db; " + hostname
 			my.SendMessage("", "", message)
@@ -792,7 +792,7 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 
 		} else {
 			tx.Commit()
-			tx3.Commit()
+			//tx3.Commit()
 			logger.Debug("Commit")
 		}
 	}()
@@ -800,7 +800,7 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 	// if err != nil {
 	// 	return err, false
 	// }
-	err = s.addClientTraffic(tx, tx3, clientTraffics)
+	err = s.addClientTraffic(tx /*tx3,*/, clientTraffics)
 	if err != nil {
 		return err, false
 	}
@@ -850,7 +850,7 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 // 	return nil
 // }
 
-func (s *InboundService) addClientTraffic(tx *gorm.DB, tx3 *gorm.DB, traffics []*xray.ClientTraffic) (err error) {
+func (s *InboundService) addClientTraffic(tx *gorm.DB /*tx3 *gorm.DB,*/, traffics []*xray.ClientTraffic) (err error) {
 	server, err := os.Hostname()
 	if err != nil {
 		server = ""
@@ -909,14 +909,14 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, tx3 *gorm.DB, traffics []
 	// Save new records in ClientTrafficDetails
 	if len(newDetailsRecords) > 10000000 {
 		logger.Warning("tx3 1")
-		if err := tx3.Create(&newDetailsRecords).Error; err != nil {
-			logger.Warning("AddClientTraffic insert details data ", err)
-			//return err
-		}
-		if err := tx3.Save(&newDetailsRecords).Error; err != nil {
-			logger.Warning("save data ", err)
-			//return err
-		}
+		// if err := tx3.Create(&newDetailsRecords).Error; err != nil {
+		// 	logger.Warning("AddClientTraffic insert details data ", err)
+		// 	//return err
+		// }
+		// if err := tx3.Save(&newDetailsRecords).Error; err != nil {
+		// 	logger.Warning("save data ", err)
+		// 	//return err
+		// }
 	} else {
 		logger.Warning(fmt.Sprintf("tx3 2 %d", len(newDetailsRecords)))
 	}
