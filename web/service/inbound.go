@@ -855,6 +855,7 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 
 func (s *InboundService) addClientTraffic(tx *gorm.DB /*tx3 *gorm.DB,*/, traffics []*xray.ClientTraffic) (err error) {
 	logger.Error("AddTraffic 3")
+	logger.Error(len(traffics))
 
 	server, err := os.Hostname()
 	if err != nil {
@@ -905,7 +906,7 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB /*tx3 *gorm.DB,*/, traffic
 			}
 		}
 		if dbTraffic.Email == "1001" {
-			logger.Error("AddTraffic 3")
+			logger.Error("AddTraffic 4")
 		}
 	}
 
@@ -928,6 +929,7 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB /*tx3 *gorm.DB,*/, traffic
 	} else {
 		logger.Warning(fmt.Sprintf("tx3 2 %d", len(newDetailsRecords)))
 	}
+	logger.Error("AddTraffic 5")
 	return nil
 }
 
