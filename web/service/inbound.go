@@ -2033,3 +2033,10 @@ func (s *InboundService) MigrateDB() {
 func (s *InboundService) GetOnlineClinets() []string {
 	return p.GetOnlineClients()
 }
+
+func SaveTrafficOnShutdown() {
+	logger.Error("SaveTrafficOnShutdown start")
+	inbound := InboundService{}
+	inbound.AddTraffic(nil, nil) // با این فرض که دیتاها داخل حافظه قبلاً کش شده باشن
+	logger.Error("SaveTrafficOnShutdown end")
+}

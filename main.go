@@ -97,6 +97,7 @@ func runWebServer() {
 				return
 			}
 		default:
+			service.SaveTrafficOnShutdown()
 			server.Stop()
 			subServer.Stop()
 			return
