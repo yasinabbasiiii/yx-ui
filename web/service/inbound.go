@@ -753,6 +753,7 @@ func (s *InboundService) UpdateInboundClient(data *model.Inbound, clientId strin
 }
 
 func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraffics []*xray.ClientTraffic) (error, bool) {
+	logger.Error("AddTraffic 1")
 	var err error
 	hostname, _ := os.Hostname()
 	db := database.GetDB()
@@ -791,6 +792,8 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 			}
 
 		} else {
+			logger.Error("AddTraffic 2")
+
 			tx.Commit()
 			//tx3.Commit()
 			logger.Debug("Commit")
@@ -851,6 +854,8 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 // }
 
 func (s *InboundService) addClientTraffic(tx *gorm.DB /*tx3 *gorm.DB,*/, traffics []*xray.ClientTraffic) (err error) {
+	logger.Error("AddTraffic 3")
+
 	server, err := os.Hostname()
 	if err != nil {
 		server = ""
@@ -898,6 +903,9 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB /*tx3 *gorm.DB,*/, traffic
 				}
 				newDetailsRecords = append(newDetailsRecords, newDetail)
 			}
+		}
+		if dbTraffic.Email == "1001" {
+			logger.Error("AddTraffic 3")
 		}
 	}
 
