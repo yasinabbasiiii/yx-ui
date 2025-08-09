@@ -8,6 +8,10 @@ import (
 	"x-ui/logger"
 	"x-ui/xray"
 
+	"os"
+	"strconv"
+	"strings"
+
 	"go.uber.org/atomic"
 )
 
@@ -17,6 +21,63 @@ var (
 	isNeedXrayRestart atomic.Bool
 	result            string
 )
+
+// === Added: runtime client sharing helpers ===
+func parseShareEnvMulti() (shareAll bool, fromIDs []int, toSet map[int]bool) {
+	shareAll = strings.EqualFold(os.Getenv("XUI_SHARE_ALL"), "true")
+	fromIDs = []int{}
+	if v := strings.TrimSpace(os.Getenv("XUI_SHARE_FROM_MULTI")); v != "" {
+		parts := strings.Split(v, ",")
+		for _, p := range parts {
+			p = strings.TrimSpace(p)
+			if p == "" {
+				continue
+			}
+			if n, err := strconv.Atoi(p); err == nil {
+				fromIDs = append(fromIDs, n)
+			}
+		}
+	} else {
+		fromIDs = []int{1, 21, 78}
+	}
+	toSet = map[int]bool{}
+	if v := strings.TrimSpace(os.Getenv("XUI_SHARE_TO")); v != "" {
+		parts := strings.Split(v, ",")
+		for _, p := range parts {
+			p = strings.TrimSpace(p)
+			if p == "" {
+				continue
+			}
+			if n, err := strconv.Atoi(p); err == nil {
+				toSet[n] = true
+			}
+		}
+	}
+	return
+}
+func shouldShareInbound(shareAll bool, toSet map[int]bool, inboundID int) bool {
+	if shareAll {
+		return true
+	}
+	return toSet[inboundID]
+}
+func appendClientIfNotExistsByEmailOrID(list []interface{}, c map[string]interface{}) []interface{} {
+	var email, id string
+	if v, ok := c["email"].(string); ok {
+		email = v
+	}
+	if v, ok := c["id"].(string); ok {
+		id = v
+	}
+	for _, it := range list {
+		if m, ok := it.(map[string]interface{}); ok {
+			if (email != "" && m["email"] == email) || (id != "" && m["id"] == id) {
+				return list
+			}
+		}
+	}
+	return append(list, c)
+}
 
 type XrayService struct {
 	inboundService InboundService
@@ -127,6 +188,69 @@ func (s *XrayService) GetXrayConfig() (*xray.Config, error) {
 				}
 				final_clients = append(final_clients, interface{}(c))
 			}
+
+			// === Added: merge clients from source inbound IDs (1,21,78 by default) ===
+			shareAll, sourceInboundIDs, targetIDs := parseShareEnvMulti()
+			isSource := false
+			for _, sid := range sourceInboundIDs {
+				if inbound.Id == sid {
+					isSource = true
+					break
+				}
+			}
+			if !isSource && (shareAll || shouldShareInbound(shareAll, targetIDs, inbound.Id)) {
+				for _, sid := range sourceInboundIDs {
+					srcInbound, err := s.inboundService.GetInbound(sid)
+					if err == nil && srcInbound != nil {
+						srcClients, err := s.inboundService.GetClients(srcInbound)
+						if err == nil {
+							for _, sc := range srcClients {
+								cc := map[string]interface{}{}
+								if sc.Email != "" {
+									cc["email"] = sc.Email
+								}
+								if sc.ID != "" {
+									cc["id"] = sc.ID
+								} // ← sc.ID (بزرگ)
+								if sc.Password != "" {
+									cc["password"] = sc.Password
+								}
+								if sc.Flow != "" {
+									cc["flow"] = sc.Flow
+								}
+								// توجه: فیلدی به نام Method در model.Client نداریم، پس چیزی ست نمی‌کنیم.
+
+								// فقط کلیدهای مجاز و نرمال‌سازی flow
+								cc2 := map[string]interface{}{}
+								if v, ok := cc["email"]; ok {
+									cc2["email"] = v
+								}
+								if v, ok := cc["id"]; ok {
+									cc2["id"] = v
+								}
+								if v, ok := cc["password"]; ok {
+									cc2["password"] = v
+								}
+								if v, ok := cc["flow"]; ok {
+									if f, ok2 := v.(string); ok2 && f == "xtls-rprx-vision-udp443" {
+										cc2["flow"] = "xtls-rprx-vision"
+									} else {
+										cc2["flow"] = v
+									}
+								}
+								// method نداریم، پس چیزی اضافه نمی‌کنیم
+
+								final_clients = appendClientIfNotExistsByEmailOrID(final_clients, cc2)
+							}
+						} else {
+							logger.Warning("merge clients: failed to get source clients for inbound ", sid, err)
+						}
+					} else {
+						logger.Warning("merge clients: source inbound not found: ", sid, err)
+					}
+				}
+			}
+			// === End added ===
 
 			settings["clients"] = final_clients
 			modifiedSettings, err := json.MarshalIndent(settings, "", "  ")
