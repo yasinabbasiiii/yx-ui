@@ -753,6 +753,40 @@ func (s *InboundService) UpdateInboundClient(data *model.Inbound, clientId strin
 }
 
 func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraffics []*xray.ClientTraffic) (error, bool) {
+	logger.Error("AddTraffic 0")
+	// --- FIX: جلوگیری از شمارشِ تکراری ترافیک وقتی یک کاربر در چند اینباند وجود دارد ---
+	if len(clientTraffics) > 0 {
+		uniq := make(map[string]*xray.ClientTraffic, len(clientTraffics))
+		for _, ct := range clientTraffics {
+			if ct == nil || ct.Email == "" {
+				continue
+			}
+			if prev, ok := uniq[ct.Email]; ok {
+				// اعداد Xray تجمعی هستند؛ برای جلوگیری از دوبار‌شماری، بزرگ‌ترین مقدار را نگه می‌داریم
+				if ct.Up > prev.Up {
+					prev.Up = ct.Up
+				}
+				if ct.Down > prev.Down {
+					prev.Down = ct.Down
+				}
+				if ct.ExpiryTime > prev.ExpiryTime {
+					prev.ExpiryTime = ct.ExpiryTime
+				}
+				if ct.Last > prev.Last {
+					prev.Last = ct.Last
+				}
+			} else {
+				c := *ct
+				uniq[ct.Email] = &c
+			}
+		}
+		dedup := make([]*xray.ClientTraffic, 0, len(uniq))
+		for _, v := range uniq {
+			dedup = append(dedup, v)
+		}
+		clientTraffics = dedup
+	}
+	// --- END FIX ---
 	logger.Error("AddTraffic 1")
 	var err error
 	hostname, _ := os.Hostname()
