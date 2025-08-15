@@ -754,7 +754,7 @@ func (s *InboundService) UpdateInboundClient(data *model.Inbound, clientId strin
 
 func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraffics []*xray.ClientTraffic) (error, bool) {
 	logger.Error("AddTraffic 0")
-	// --- FIX: جلوگیری از شمارشِ تکراری ترافیک وقتی یک کاربر در چند اینباند وجود دارد ---
+	// --- FIX: aggregate (sum) per-email client traffic across inbounds ---
 	if len(clientTraffics) > 0 {
 		uniq := make(map[string]*xray.ClientTraffic, len(clientTraffics))
 		for _, ct := range clientTraffics {
@@ -762,20 +762,25 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 				continue
 			}
 			if prev, ok := uniq[ct.Email]; ok {
-				// اعداد Xray تجمعی هستند؛ برای جلوگیری از دوبار‌شماری، بزرگ‌ترین مقدار را نگه می‌داریم
-				if ct.Up > prev.Up {
-					prev.Up = ct.Up
-				}
-				if ct.Down > prev.Down {
-					prev.Down = ct.Down
-				}
+				// جمع مقادیر دلتا (Up/Down) برای ثبت مجموع واقعی مصرف
+				prev.Up += ct.Up
+				prev.Down += ct.Down
+
+				// فیلدهایی که زمان/حداکثر هستند را حداکثر می‌گیریم (expiry/last)
 				if ct.ExpiryTime > prev.ExpiryTime {
 					prev.ExpiryTime = ct.ExpiryTime
 				}
 				if ct.Last > prev.Last {
 					prev.Last = ct.Last
 				}
+
+				// فیلدهای سرویسی/تخصیصی: total (محدودیت/سقف بسته به مدل) را حداقل یا حداکثر نگه دارید.
+				// این پروژه معمولاً از Total برای سقف استفاده می‌کند، بنابراین نگه داشتن مقدار بزرگ‌تر منطقی است:
+				if ct.Total > prev.Total {
+					prev.Total = ct.Total
+				}
 			} else {
+				// copy by value
 				c := *ct
 				uniq[ct.Email] = &c
 			}
@@ -787,6 +792,7 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 		clientTraffics = dedup
 	}
 	// --- END FIX ---
+
 	logger.Error("AddTraffic 1")
 	var err error
 	hostname, _ := os.Hostname()

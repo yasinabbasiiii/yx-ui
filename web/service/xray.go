@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"sync"
-
 	"x-ui/logger"
 	"x-ui/xray"
 
@@ -267,6 +266,9 @@ func (s *XrayService) RestartXray(isForce bool) error {
 }
 
 func (s *XrayService) StopXray() error {
+	// ذخیره مصرف قبل از ری‌استارت
+	//logger.Info("Saving traffic before restart...")
+	//job.NewXrayTrafficJob().Run() // اجرای دستی همون Job که در Cron هست
 	lock.Lock()
 	defer lock.Unlock()
 	logger.Debug("stop xray")
