@@ -288,7 +288,7 @@ func (s *ServerService) StopXrayService() (string error) {
 
 func (s *ServerService) RestartXrayService() (string error) {
 	// قبل از ری‌استارت، یک‌بار مصرف را ذخیره کن
-	s.SaveTrafficSnapshotOnce()
+	s.SaveTrafficSnapshotOnce() //samyar
 	s.xrayService.StopXray()
 	defer func() {
 		err := s.xrayService.RestartXray(true)

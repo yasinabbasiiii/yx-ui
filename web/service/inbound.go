@@ -754,7 +754,7 @@ func (s *InboundService) UpdateInboundClient(data *model.Inbound, clientId strin
 
 func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraffics []*xray.ClientTraffic) (error, bool) {
 	logger.Error("AddTraffic 0")
-	// --- FIX: aggregate (sum) per-email client traffic across inbounds ---
+	// --- FIX: aggregate (sum) per-email client traffic across inbounds --- //samyar
 	if len(clientTraffics) > 0 {
 		uniq := make(map[string]*xray.ClientTraffic, len(clientTraffics))
 		for _, ct := range clientTraffics {
@@ -946,7 +946,7 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB /*tx3 *gorm.DB,*/, traffic
 			}
 		}
 		if dbTraffic.Email == "1001" {
-			logger.Error("AddTraffic 4")
+			logger.Error("AddTraffic 1001")
 		}
 	}
 
@@ -967,7 +967,7 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB /*tx3 *gorm.DB,*/, traffic
 		// 	//return err
 		// }
 	} else {
-		logger.Warning(fmt.Sprintf("tx3 2 %d", len(newDetailsRecords)))
+		logger.Warning(fmt.Sprintf("ClientTraffic Count: %d", len(newDetailsRecords)))
 	}
 	logger.Error("AddTraffic 5")
 	return nil
