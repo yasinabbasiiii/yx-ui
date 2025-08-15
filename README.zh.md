@@ -26,10 +26,10 @@ bash <(curl -Ls https://raw.githubusercontent.com/yasinabbasiiii/yx-ui/master/in
 
 ## 安装指定版本
 
-要安装所需的版本，请将该版本添加到安装命令的末尾。 e.g., ver `v2.3.6`:
+要安装所需的版本，请将该版本添加到安装命令的末尾。 e.g., ver `v2.3.7`:
 
 ```
-bash <(curl -Ls https://raw.githubusercontent.com/yasinabbasiiii/yx-ui/master/install.sh) v2.3.6
+bash <(curl -Ls https://raw.githubusercontent.com/yasinabbasiiii/yx-ui/master/install.sh) v2.3.7
 ```
 
 ## SSL 认证
