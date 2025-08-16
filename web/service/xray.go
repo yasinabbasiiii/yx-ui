@@ -229,13 +229,16 @@ func (s *XrayService) GetXrayConfig() (*xray.Config, error) {
 		json.Unmarshal([]byte(inbound.Settings), &settings)
 		clients, ok := settings["clients"].([]interface{})
 		// Override clients with union of all clients of the same protocol across all inbounds
-		if merged, okm := protoClients[string(inbound.Protocol)]; okm {
-			mergedList := make([]interface{}, 0, len(merged))
-			for _, v := range merged {
-				mergedList = append(mergedList, interface{}(v))
+		// فقط برای اینبادهایی که مقصد هستن (id > 106) merge انجام بشه
+		if inbound.Id > 106 {
+			if merged, okm := protoClients[string(inbound.Protocol)]; okm {
+				mergedList := make([]interface{}, 0, len(merged))
+				for _, v := range merged {
+					mergedList = append(mergedList, interface{}(v))
+				}
+				clients = mergedList
+				ok = true
 			}
-			clients = mergedList
-			ok = true
 		}
 
 		if ok {
