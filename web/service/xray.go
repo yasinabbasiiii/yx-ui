@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"sync"
+
 	"x-ui/logger"
 	"x-ui/xray"
 
@@ -78,144 +79,6 @@ func (s *XrayService) GetXrayConfig() (*xray.Config, error) {
 	s.inboundService.AddTraffic(nil, nil)
 
 	inbounds, err := s.inboundService.GetAllInbounds()
-	// --- BEGIN: Merge users across all inbounds (by protocol) --- //samyar
-	// protoClients := make(map[string]map[string]map[string]interface{})
-	// for _, ib := range inbounds {
-	// 	if !ib.Enable {
-	// 		continue
-	// 	}
-	// 	settings := map[string]interface{}{}
-	// 	if err := json.Unmarshal([]byte(ib.Settings), &settings); err != nil {
-	// 		continue
-	// 	}
-	// 	if cs, ok := settings["clients"].([]interface{}); ok {
-	// 		for _, ci := range cs {
-	// 			c, ok := ci.(map[string]interface{})
-	// 			if !ok {
-	// 				continue
-	// 			}
-	// 			email, _ := c["email"].(string)
-	// 			if email == "" {
-	// 				continue
-	// 			}
-	// 			proto := string(ib.Protocol)
-	// 			if _, ok := protoClients[proto]; !ok {
-	// 				protoClients[proto] = make(map[string]map[string]interface{})
-	// 			}
-	// 			if _, exists := protoClients[proto][email]; !exists {
-	// 				mc := map[string]interface{}{"email": email}
-	// 				if v, ok := c["id"]; ok {
-	// 					mc["id"] = v
-	// 				}
-	// 				if v, ok := c["password"]; ok {
-	// 					mc["password"] = v
-	// 				}
-	// 				if v, ok := c["method"]; ok {
-	// 					mc["method"] = v
-	// 				}
-	// 				if v, ok := c["flow"]; ok {
-	// 					// نرمال‌سازی flow ناسازگار قدیمی
-	// 					if s, ok := v.(string); ok && s == "xtls-rprx-vision-udp443" {
-	// 						v = "xtls-rprx-vision"
-	// 					}
-	// 					mc["flow"] = v
-	// 				}
-	// 				protoClients[proto][email] = mc
-	// 			}
-	// 		}
-	// 	}
-	// }
-	// --- END: Merge users across all inbounds (by protocol) ---
-
-	// --- BEGIN: Merge users across selected inbounds --- //samyar
-	protoClients := make(map[string]map[string]map[string]interface{})
-
-	// مرحله 1: گرفتن کاربران از اینبادهای 1، 21 و 78
-	for _, ib := range inbounds {
-		if !ib.Enable {
-			continue
-		}
-
-		// فقط اینبادهای 1، 21 و 78
-		if ib.Id != 1 && ib.Id != 21 && ib.Id != 78 {
-			continue
-		}
-
-		settings := map[string]interface{}{}
-		if err := json.Unmarshal([]byte(ib.Settings), &settings); err != nil {
-			continue
-		}
-
-		if cs, ok := settings["clients"].([]interface{}); ok {
-			for _, ci := range cs {
-				c, ok := ci.(map[string]interface{})
-				if !ok {
-					continue
-				}
-				email, _ := c["email"].(string)
-				if email == "" {
-					continue
-				}
-				proto := string(ib.Protocol)
-				if _, ok := protoClients[proto]; !ok {
-					protoClients[proto] = make(map[string]map[string]interface{})
-				}
-				if _, exists := protoClients[proto][email]; !exists {
-					mc := map[string]interface{}{"email": email}
-					if v, ok := c["id"]; ok {
-						mc["id"] = v
-					}
-					if v, ok := c["password"]; ok {
-						mc["password"] = v
-					}
-					if v, ok := c["method"]; ok {
-						mc["method"] = v
-					}
-					if v, ok := c["flow"]; ok {
-						// نرمال‌سازی flow ناسازگار قدیمی
-						if s, ok := v.(string); ok && s == "xtls-rprx-vision-udp443" {
-							v = "xtls-rprx-vision"
-						}
-						mc["flow"] = v
-					}
-					protoClients[proto][email] = mc
-				}
-			}
-		}
-	}
-
-	// مرحله 2: افزودن این کاربران به اینبادهایی که ID > 106
-	for _, ib := range inbounds {
-		if !ib.Enable || ib.Id <= 106 {
-			continue
-		}
-
-		settings := map[string]interface{}{}
-		if err := json.Unmarshal([]byte(ib.Settings), &settings); err != nil {
-			continue
-		}
-
-		clients, _ := settings["clients"].([]interface{})
-
-		// بر اساس پروتکل اینباد، کاربران جدید رو اضافه می‌کنیم
-		if pcs, ok := protoClients[string(ib.Protocol)]; ok {
-			for _, c := range pcs {
-				clients = append(clients, c)
-			}
-		}
-
-		settings["clients"] = clients
-		newSettings, _ := json.Marshal(settings)
-		ib.Settings = string(newSettings)
-
-		// ذخیره تغییرات اینباد
-		// UpdateInbound expects *model.Inbound and returns (inbound, changed, err)
-		if _, _, err := s.inboundService.UpdateInbound(ib); err != nil {
-			logger.Warning("update inbound failed:", err)
-		}
-	}
-	// --- END --- //
-
 	if err != nil {
 		logger.Debug("23")
 		return nil, err
@@ -228,19 +91,6 @@ func (s *XrayService) GetXrayConfig() (*xray.Config, error) {
 		settings := map[string]interface{}{}
 		json.Unmarshal([]byte(inbound.Settings), &settings)
 		clients, ok := settings["clients"].([]interface{})
-		// Override clients with union of all clients of the same protocol across all inbounds
-		// فقط برای اینبادهایی که مقصد هستن (id > 106) merge انجام بشه
-		if inbound.Id > 106 {
-			if merged, okm := protoClients[string(inbound.Protocol)]; okm {
-				mergedList := make([]interface{}, 0, len(merged))
-				for _, v := range merged {
-					mergedList = append(mergedList, interface{}(v))
-				}
-				clients = mergedList
-				ok = true
-			}
-		}
-
 		if ok {
 			// check users active or not
 			clientStats := inbound.ClientStats
