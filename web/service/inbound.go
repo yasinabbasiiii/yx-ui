@@ -753,47 +753,45 @@ func (s *InboundService) UpdateInboundClient(data *model.Inbound, clientId strin
 }
 
 func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraffics []*xray.ClientTraffic) (error, bool) {
-	logger.Error("AddTraffic 0")
-	// --- FIX: aggregate (sum) per-email client traffic across inbounds --- //samyar
-	if len(clientTraffics) > 0 {
-		uniq := make(map[string]*xray.ClientTraffic, len(clientTraffics))
-		for _, ct := range clientTraffics {
-			if ct == nil || ct.Email == "" {
-				continue
-			}
-			if prev, ok := uniq[ct.Email]; ok {
-				// جمع مقادیر دلتا (Up/Down) برای ثبت مجموع واقعی مصرف
-				prev.Up += ct.Up
-				prev.Down += ct.Down
 
-				// فیلدهایی که زمان/حداکثر هستند را حداکثر می‌گیریم (expiry/last)
-				if ct.ExpiryTime > prev.ExpiryTime {
-					prev.ExpiryTime = ct.ExpiryTime
-				}
-				if ct.Last > prev.Last {
-					prev.Last = ct.Last
-				}
+	// --- FIX: aggregate (sum) per-email client traffic across inbounds --- //Samyar
+	// if len(clientTraffics) > 0 {
+	// 	uniq := make(map[string]*xray.ClientTraffic, len(clientTraffics))
+	// 	for _, ct := range clientTraffics {
+	// 		if ct == nil || ct.Email == "" {
+	// 			continue
+	// 		}
+	// 		if prev, ok := uniq[ct.Email]; ok {
+	// 			// جمع مقادیر دلتا (Up/Down) برای ثبت مجموع واقعی مصرف
+	// 			prev.Up += ct.Up
+	// 			prev.Down += ct.Down
 
-				// فیلدهای سرویسی/تخصیصی: total (محدودیت/سقف بسته به مدل) را حداقل یا حداکثر نگه دارید.
-				// این پروژه معمولاً از Total برای سقف استفاده می‌کند، بنابراین نگه داشتن مقدار بزرگ‌تر منطقی است:
-				if ct.Total > prev.Total {
-					prev.Total = ct.Total
-				}
-			} else {
-				// copy by value
-				c := *ct
-				uniq[ct.Email] = &c
-			}
-		}
-		dedup := make([]*xray.ClientTraffic, 0, len(uniq))
-		for _, v := range uniq {
-			dedup = append(dedup, v)
-		}
-		clientTraffics = dedup
-	}
+	// 			// فیلدهایی که زمان/حداکثر هستند را حداکثر می‌گیریم (expiry/last)
+	// 			if ct.ExpiryTime > prev.ExpiryTime {
+	// 				prev.ExpiryTime = ct.ExpiryTime
+	// 			}
+	// 			if ct.Last > prev.Last {
+	// 				prev.Last = ct.Last
+	// 			}
+
+	// 			// فیلدهای سرویسی/تخصیصی: total (محدودیت/سقف بسته به مدل) را حداقل یا حداکثر نگه دارید.
+	// 			// این پروژه معمولاً از Total برای سقف استفاده می‌کند، بنابراین نگه داشتن مقدار بزرگ‌تر منطقی است:
+	// 			if ct.Total > prev.Total {
+	// 				prev.Total = ct.Total
+	// 			}
+	// 		} else {
+	// 			// copy by value
+	// 			c := *ct
+	// 			uniq[ct.Email] = &c
+	// 		}
+	// 	}
+	// 	dedup := make([]*xray.ClientTraffic, 0, len(uniq))
+	// 	for _, v := range uniq {
+	// 		dedup = append(dedup, v)
+	// 	}
+	// 	clientTraffics = dedup
+	// }
 	// --- END FIX ---
-
-	logger.Error("AddTraffic 1")
 	var err error
 	hostname, _ := os.Hostname()
 	db := database.GetDB()
@@ -832,11 +830,11 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 			}
 
 		} else {
-			logger.Error("AddTraffic 2")
+			//logger.Error("AddTraffic 2")
 
 			tx.Commit()
 			//tx3.Commit()
-			logger.Debug("Commit")
+			//logger.Debug("Commit")
 		}
 	}()
 	// err = s.addInboundTraffic(tx, inboundTraffics)
@@ -894,8 +892,9 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 // }
 
 func (s *InboundService) addClientTraffic(tx *gorm.DB /*tx3 *gorm.DB,*/, traffics []*xray.ClientTraffic) (err error) {
-	logger.Error("AddTraffic 3")
-	logger.Error(len(traffics))
+	//logger.Error("AddTraffic 3")
+	//logger.Error(len(traffics))
+	logger.Warning(fmt.Sprintf("Traffic Count: %d", len(traffics)))
 
 	server, err := os.Hostname()
 	if err != nil {
@@ -969,7 +968,7 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB /*tx3 *gorm.DB,*/, traffic
 	} else {
 		logger.Warning(fmt.Sprintf("ClientTraffic Count: %d", len(newDetailsRecords)))
 	}
-	logger.Error("AddTraffic 5")
+	//logger.Error("AddTraffic 5")
 	return nil
 }
 
@@ -1761,7 +1760,7 @@ func (s *InboundService) DelDepletedClients(id int) (err error) { //Samyar
 
 	depletedClients := []xray.ClientTraffic{}
 	//err = db.Model(xray.ClientTraffic{}).Where(whereText+" and enable = ?", id, false).Select("inbound_id, GROUP_CONCAT(email) as email").Group("inbound_id").Find(&depletedClients).Error
-	expiryThreshold := time.Now().AddDate(0, 0, -3).UnixMilli() //Samyar
+	expiryThreshold := time.Now().AddDate(0, 0, -5).UnixMilli() //Samyar
 	err = db.Model(xray.ClientTraffic{}).
 		Where(whereText+" and enable = ? and expiry_time > 0 and expiry_time < ?  ", id, false, expiryThreshold).
 		Select("inbound_id, GROUP_CONCAT(email) as email").
