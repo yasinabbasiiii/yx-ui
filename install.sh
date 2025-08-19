@@ -172,7 +172,7 @@ config_after_install2() {
 }
 
 install_x-ui() {
-    echo -e "${yellow}Install Start 2.3.7.8"
+    echo -e "Install Start 2.3.7.8"
     cd /usr/local/
 
     if [ $# == 0 ]; then
