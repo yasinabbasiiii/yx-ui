@@ -16,10 +16,10 @@ require (
 	github.com/valyala/fasthttp v1.55.0
 	github.com/xtls/xray-core v1.8.16
 	go.uber.org/atomic v1.11.0
-	golang.org/x/text v0.16.0
+	golang.org/x/text v0.20.0
 	google.golang.org/grpc v1.64.0
-	gorm.io/driver/sqlite v1.5.6
-	gorm.io/gorm v1.25.10
+	gorm.io/driver/sqlite v1.6.0
+	gorm.io/gorm v1.30.0
 )
 
 require github.com/go-sql-driver/mysql v1.7.0 // indirect
