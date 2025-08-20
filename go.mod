@@ -1,6 +1,6 @@
 module x-ui
 
-go 1.22.4
+go 1.23.0
 
 require (
 	github.com/gin-contrib/gzip v1.0.1
@@ -8,7 +8,7 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/goccy/go-json v0.10.3
 	github.com/mymmrac/telego v0.30.2
-	github.com/nicksnyder/go-i18n/v2 v2.4.0
+	github.com/nicksnyder/go-i18n/v2 v2.6.0
 	github.com/op/go-logging v0.0.0-20160315200505-970db520ece7
 	github.com/pelletier/go-toml/v2 v2.2.2
 	github.com/robfig/cron/v3 v3.0.1
@@ -16,7 +16,7 @@ require (
 	github.com/valyala/fasthttp v1.55.0
 	github.com/xtls/xray-core v1.8.16
 	go.uber.org/atomic v1.11.0
-	golang.org/x/text v0.16.0
+	golang.org/x/text v0.23.0
 	google.golang.org/grpc v1.64.0
 	gorm.io/driver/sqlite v1.5.6
 	gorm.io/gorm v1.25.10
